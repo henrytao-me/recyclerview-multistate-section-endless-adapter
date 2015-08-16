@@ -26,17 +26,26 @@ import android.view.MenuItem;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import me.henrytao.me.sample.R;
+import me.henrytao.me.sample.adapter.HeaderAdapter;
 import me.henrytao.me.sample.adapter.HeaderFooterAdapter;
-import me.henrytao.me.sample.adapter.MainAdapter;
+import me.henrytao.me.sample.adapter.MaterialAdapter;
+import me.henrytao.me.sample.adapter.MultipleHeaderAdapter;
+import me.henrytao.me.sample.adapter.SimpleAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
   @Bind(R.id.recycler_view)
   RecyclerView vRecyclerView;
 
+  private HeaderAdapter mHeaderAdapter;
+
   private HeaderFooterAdapter mHeaderFooterAdapter;
 
-  private MainAdapter mMainAdapter;
+  private MaterialAdapter mMaterialAdapter;
+
+  private MultipleHeaderAdapter mMultipleHeaderAdapter;
+
+  private SimpleAdapter mSimpleAdapter;
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
@@ -46,9 +55,27 @@ public class MainActivity extends AppCompatActivity {
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
-    int id = item.getItemId();
-    if (id == R.id.action_settings) {
-      return true;
+    switch (item.getItemId()) {
+      case R.id.action_simple_recyclerview:
+        setTitle(R.string.text_simple_recyclerview);
+        vRecyclerView.setAdapter(mSimpleAdapter);
+        return true;
+      case R.id.action_material_recyclerview:
+        setTitle(R.string.text_material_recyclerview);
+        vRecyclerView.setAdapter(mMaterialAdapter);
+        return true;
+      case R.id.action_header_recyclerview:
+        setTitle(R.string.text_header_recyclerview);
+        vRecyclerView.setAdapter(mHeaderAdapter);
+        return true;
+      case R.id.action_header_footer_recyclerview:
+        setTitle(R.string.text_header_footer_recyclerview);
+        vRecyclerView.setAdapter(mHeaderFooterAdapter);
+        return true;
+      case R.id.action_multiple_header_recyclerview:
+        setTitle(R.string.text_multiple_header_recyclerview);
+        vRecyclerView.setAdapter(mMultipleHeaderAdapter);
+        return true;
     }
     return super.onOptionsItemSelected(item);
   }
@@ -59,9 +86,16 @@ public class MainActivity extends AppCompatActivity {
     setContentView(R.layout.activity_main);
     ButterKnife.bind(this);
 
-    mMainAdapter = new MainAdapter();
+    mSimpleAdapter = new SimpleAdapter();
+    mMaterialAdapter = new MaterialAdapter(mSimpleAdapter);
+    mHeaderAdapter = new HeaderAdapter(mSimpleAdapter);
+    mHeaderFooterAdapter = new HeaderFooterAdapter(mSimpleAdapter);
+    mMultipleHeaderAdapter = new MultipleHeaderAdapter(mSimpleAdapter);
+
     vRecyclerView.setHasFixedSize(false);
     vRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-    vRecyclerView.setAdapter(mMainAdapter);
+
+    setTitle(R.string.text_simple_recyclerview);
+    vRecyclerView.setAdapter(mSimpleAdapter);
   }
 }

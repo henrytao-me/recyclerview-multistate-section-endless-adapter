@@ -14,18 +14,18 @@
   ~ limitations under the License.
   -->
 
-<resources xmlns:tools="http://schemas.android.com/tools">
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <!-- Base application theme. -->
-  <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-    <!-- Customize your theme here. -->
-  </style>
+  <item android:state_pressed="true">
+    <shape>
+      <solid android:color="#1E000000" />
+    </shape>
+  </item>
 
-  <style name="Divider">
-    <item name="android:layout_width">match_parent</item>
-    <item name="android:layout_height">0.4dp</item>
-    <item name="android:layout_alignParentBottom">true</item>
-    <item name="android:background">#999999</item>
-  </style>
+  <item>
+    <shape android:shape="rectangle">
+      <solid android:color="@android:color/transparent" />
+    </shape>
+  </item>
 
-</resources>
+</selector>

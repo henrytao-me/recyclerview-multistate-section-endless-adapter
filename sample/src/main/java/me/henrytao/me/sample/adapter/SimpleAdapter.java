@@ -12,16 +12,17 @@ import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import me.henrytao.me.recyclerview.RecyclerViewAdapter;
 import me.henrytao.me.sample.R;
 
 /**
  * Created by henrytao on 8/16/15.
  */
-public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ItemHolder> {
+public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.ItemHolder> {
 
   List<Integer> mData;
 
-  public MainAdapter() {
+  public SimpleAdapter() {
     mData = new ArrayList<>();
     for (int i = 0; i < 100; i++) {
       mData.add(i);
@@ -34,12 +35,12 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ItemHolder> {
   }
 
   @Override
-  public void onBindViewHolder(MainAdapter.ItemHolder holder, int position) {
+  public void onBindViewHolder(SimpleAdapter.ItemHolder holder, int position) {
     holder.bind(mData.get(position));
   }
 
   @Override
-  public MainAdapter.ItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+  public SimpleAdapter.ItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
     return new ItemHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_main, parent, false));
   }
 

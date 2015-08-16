@@ -81,7 +81,7 @@ public abstract class RecyclerViewAdapter extends RecyclerView.Adapter {
 
   @Override
   public int getItemCount() {
-    return 0;
+    return mBaseAdapter.getItemCount() + getHeaderCount() + getFooterCount();
   }
 
   @Override
@@ -90,8 +90,6 @@ public abstract class RecyclerViewAdapter extends RecyclerView.Adapter {
       return ItemViewType.HEADER.getValue() * getChunkSize() + getHeaderViewIndex(position);
     } else if (isFooterView(position)) {
       return ItemViewType.FOOTER.getValue() * getChunkSize() + getFooterViewIndex(position);
-    } else if (isSectionView(position)) {
-      return ItemViewType.SECTION.getValue() * getChunkSize();
     } else if (isItemView(position)) {
       return ItemViewType.ITEM.getValue() * getChunkSize();
     }
@@ -100,22 +98,21 @@ public abstract class RecyclerViewAdapter extends RecyclerView.Adapter {
 
   @Override
   public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-    if (holder instanceof ItemHolder) {
-      mBaseAdapter.onBindViewHolder(holder, getDataPosition(position));
+    if (holder instanceof BlankHolder || holder instanceof HeaderHolder || holder instanceof FooterHolder) {
+      return;
     }
+    mBaseAdapter.onBindViewHolder(holder, getDataPosition(position));
   }
 
   @Override
   public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-    int index = viewType - viewType / getChunkSize();
+    int index = viewType - viewType / getChunkSize() * getChunkSize();
     viewType = viewType / getChunkSize();
     ItemViewType itemViewType = ItemViewType.BLANK;
     if (viewType == ItemViewType.HEADER.getValue()) {
       itemViewType = ItemViewType.HEADER;
     } else if (viewType == ItemViewType.FOOTER.getValue()) {
       itemViewType = ItemViewType.FOOTER;
-    } else if (viewType == ItemViewType.SECTION.getValue()) {
-      itemViewType = ItemViewType.SECTION;
     } else if (viewType == ItemViewType.ITEM.getValue()) {
       itemViewType = ItemViewType.ITEM;
     }
@@ -136,7 +133,7 @@ public abstract class RecyclerViewAdapter extends RecyclerView.Adapter {
   }
 
   public int getDataPosition(int position) {
-    return 0;
+    return position - getHeaderCount();
   }
 
   public int getFooterCount() {
@@ -148,7 +145,7 @@ public abstract class RecyclerViewAdapter extends RecyclerView.Adapter {
   }
 
   public int getPosition(int dataPosition) {
-    return 0;
+    return dataPosition + getHeaderCount();
   }
 
   public RecyclerView.ViewHolder onCreateBlankViewHolder(LayoutInflater inflater, ViewGroup parent) {
@@ -160,11 +157,13 @@ public abstract class RecyclerViewAdapter extends RecyclerView.Adapter {
   }
 
   protected int getFooterViewIndex(int position) {
-    return 0;
+    int index = position - (mBaseAdapter.getItemCount() + getHeaderCount());
+    return index < 0 ? 0 : (index > getFooterCount() - 1 ? getFooterCount() - 1 : index);
   }
 
   protected int getHeaderViewIndex(int position) {
-    return 0;
+    int index = position;
+    return index < 0 ? 0 : (index > getHeaderCount() - 1 ? getHeaderCount() - 1 : index);
   }
 
   protected boolean isBlankView(int position) {
@@ -172,23 +171,20 @@ public abstract class RecyclerViewAdapter extends RecyclerView.Adapter {
   }
 
   protected boolean isFooterView(int position) {
-    return false;
+    int index = mBaseAdapter.getItemCount() + getHeaderCount();
+    return position >= index && position < (index + getFooterCount());
   }
 
   protected boolean isHeaderView(int position) {
-    return false;
+    return position >= 0 && position < getHeaderCount();
   }
 
   protected boolean isItemView(int position) {
-    return false;
-  }
-
-  protected boolean isSectionView(int position) {
-    return false;
+    return !isHeaderView(position) && !isFooterView(position);
   }
 
   public enum ItemViewType {
-    BLANK(0), FOOTER(1), HEADER(2), ITEM(3), SECTION(4);
+    BLANK(0), FOOTER(1), HEADER(2), ITEM(3);
 
     private final int mValue;
 
@@ -199,10 +195,6 @@ public abstract class RecyclerViewAdapter extends RecyclerView.Adapter {
     public int getValue() {
       return mValue;
     }
-  }
-
-  public interface ItemHolder {
-
   }
 
   public static class BlankHolder extends RecyclerView.ViewHolder {
@@ -222,13 +214,6 @@ public abstract class RecyclerViewAdapter extends RecyclerView.Adapter {
   public static class HeaderHolder extends RecyclerView.ViewHolder {
 
     public HeaderHolder(View itemView) {
-      super(itemView);
-    }
-  }
-
-  public static class SectionHolder extends RecyclerView.ViewHolder {
-
-    public SectionHolder(View itemView) {
       super(itemView);
     }
   }

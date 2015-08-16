@@ -18,7 +18,9 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="?attr/actionBarSize"
-  android:orientation="vertical">
+  android:orientation="vertical"
+  android:background="@drawable/md_ripple"
+  android:clickable="true">
 
   <TextView
     android:id="@+id/title"
@@ -28,10 +30,5 @@
     android:paddingLeft="16dp"
     tools:text="Item" />
 
-  <View
-    android:layout_width="match_parent"
-    android:layout_height="0.4dp"
-    android:layout_alignParentBottom="true"
-    android:alpha="0.2"
-    android:background="@android:color/black" />
+  <View style="@style/Divider" />
 </RelativeLayout>
