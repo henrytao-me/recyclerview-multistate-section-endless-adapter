@@ -17,13 +17,21 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  tools:context=".MainActivity">
+  android:layout_height="?attr/actionBarSize"
+  android:orientation="vertical">
 
-  <android.support.v7.widget.RecyclerView
-    android:id="@+id/recycler_view"
+  <TextView
+    android:id="@+id/title"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:scrollbars="vertical" />
+    android:layout_height="wrap_content"
+    android:layout_centerVertical="true"
+    android:paddingLeft="16dp"
+    tools:text="Item" />
 
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="0.4dp"
+    android:layout_alignParentBottom="true"
+    android:alpha="0.2"
+    android:background="@android:color/black" />
 </RelativeLayout>

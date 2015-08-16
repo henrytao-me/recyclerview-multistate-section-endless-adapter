@@ -16,20 +16,67 @@
 
 package me.henrytao.me.recyclerview;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 /**
  * Created by henrytao on 8/16/15.
  */
-public class RecyclerViewAdapter<T extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<T> {
+public abstract class RecyclerViewAdapter extends RecyclerView.Adapter {
 
-  private final Context mContext;
+  public abstract RecyclerView.ViewHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent, int index);
 
-  public RecyclerViewAdapter(Context context, RecyclerView.Adapter baseAdapter) {
-    this.mContext = context;
+  public abstract RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent, int index);
+
+  private static final int CHUNK_SIZE = 1000;
+
+  private final RecyclerView.Adapter mBaseAdapter;
+
+  private final int mFooterCount;
+
+  private final int mHeaderCount;
+
+  public RecyclerViewAdapter(RecyclerView.Adapter baseAdapter, int headerCount, int footerCount) {
+    mBaseAdapter = baseAdapter;
+    mHeaderCount = headerCount;
+    mFooterCount = footerCount;
+    mBaseAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+      @Override
+      public void onChanged() {
+        super.onChanged();
+        notifyDataSetChanged();
+      }
+
+      @Override
+      public void onItemRangeChanged(int positionStart, int itemCount) {
+        super.onItemRangeChanged(positionStart, itemCount);
+        notifyItemRangeChanged(positionStart, itemCount);
+      }
+
+      @Override
+      public void onItemRangeInserted(int positionStart, int itemCount) {
+        super.onItemRangeInserted(positionStart, itemCount);
+        notifyItemRangeInserted(positionStart, itemCount);
+      }
+
+      @Override
+      public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
+        super.onItemRangeMoved(fromPosition, toPosition, itemCount);
+        notifyItemMoved(fromPosition, toPosition);
+      }
+
+      @Override
+      public void onItemRangeRemoved(int positionStart, int itemCount) {
+        super.onItemRangeRemoved(positionStart, itemCount);
+        notifyItemRangeRemoved(positionStart, itemCount);
+      }
+    });
+  }
+
+  public RecyclerViewAdapter(RecyclerView.Adapter baseAdapter) {
+    this(baseAdapter, 0, 0);
   }
 
   @Override
@@ -38,32 +85,151 @@ public class RecyclerViewAdapter<T extends RecyclerView.ViewHolder> extends Recy
   }
 
   @Override
-  public void onBindViewHolder(T t, int i) {
-
+  public int getItemViewType(int position) {
+    if (isHeaderView(position)) {
+      return ItemViewType.HEADER.getValue() * getChunkSize() + getHeaderViewIndex(position);
+    } else if (isFooterView(position)) {
+      return ItemViewType.FOOTER.getValue() * getChunkSize() + getFooterViewIndex(position);
+    } else if (isSectionView(position)) {
+      return ItemViewType.SECTION.getValue() * getChunkSize();
+    } else if (isItemView(position)) {
+      return ItemViewType.ITEM.getValue() * getChunkSize();
+    }
+    return ItemViewType.BLANK.getValue() * getChunkSize();
   }
 
   @Override
-  public T onCreateViewHolder(ViewGroup viewGroup, int i) {
-    return null;
+  public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    if (holder instanceof ItemHolder) {
+      mBaseAdapter.onBindViewHolder(holder, getDataPosition(position));
+    }
   }
 
-  public RecyclerViewAdapter addFooterView(int layoutResId) {
-    return addFooterView(ViewUtils.inflate(mContext, layoutResId));
+  @Override
+  public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    int index = viewType - viewType / getChunkSize();
+    viewType = viewType / getChunkSize();
+    ItemViewType itemViewType = ItemViewType.BLANK;
+    if (viewType == ItemViewType.HEADER.getValue()) {
+      itemViewType = ItemViewType.HEADER;
+    } else if (viewType == ItemViewType.FOOTER.getValue()) {
+      itemViewType = ItemViewType.FOOTER;
+    } else if (viewType == ItemViewType.SECTION.getValue()) {
+      itemViewType = ItemViewType.SECTION;
+    } else if (viewType == ItemViewType.ITEM.getValue()) {
+      itemViewType = ItemViewType.ITEM;
+    }
+
+    LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+    RecyclerView.ViewHolder viewHolder = null;
+    switch (itemViewType) {
+      case FOOTER:
+        viewHolder = onCreateFooterViewHolder(layoutInflater, parent, index);
+        break;
+      case HEADER:
+        viewHolder = onCreateHeaderViewHolder(layoutInflater, parent, index);
+        break;
+      case ITEM:
+        return mBaseAdapter.onCreateViewHolder(parent, 0);
+    }
+    return viewHolder == null ? onCreateBlankViewHolder(layoutInflater, parent) : viewHolder;
   }
 
-  public RecyclerViewAdapter addFooterView(View view) {
-    return this;
+  public int getDataPosition(int position) {
+    return 0;
   }
 
-  public RecyclerViewAdapter addHeaderView(int layoutResId) {
-    return addHeaderView(ViewUtils.inflate(mContext, layoutResId));
+  public int getFooterCount() {
+    return mFooterCount;
   }
 
-  public RecyclerViewAdapter addHeaderView(View view) {
-    return this;
+  public int getHeaderCount() {
+    return mHeaderCount;
   }
 
-  public RecyclerViewAdapter setSections() {
-    return this;
+  public int getPosition(int dataPosition) {
+    return 0;
+  }
+
+  public RecyclerView.ViewHolder onCreateBlankViewHolder(LayoutInflater inflater, ViewGroup parent) {
+    return new BlankHolder(new View(parent.getContext()));
+  }
+
+  protected int getChunkSize() {
+    return CHUNK_SIZE;
+  }
+
+  protected int getFooterViewIndex(int position) {
+    return 0;
+  }
+
+  protected int getHeaderViewIndex(int position) {
+    return 0;
+  }
+
+  protected boolean isBlankView(int position) {
+    return true;
+  }
+
+  protected boolean isFooterView(int position) {
+    return false;
+  }
+
+  protected boolean isHeaderView(int position) {
+    return false;
+  }
+
+  protected boolean isItemView(int position) {
+    return false;
+  }
+
+  protected boolean isSectionView(int position) {
+    return false;
+  }
+
+  public enum ItemViewType {
+    BLANK(0), FOOTER(1), HEADER(2), ITEM(3), SECTION(4);
+
+    private final int mValue;
+
+    ItemViewType(int value) {
+      mValue = value;
+    }
+
+    public int getValue() {
+      return mValue;
+    }
+  }
+
+  public interface ItemHolder {
+
+  }
+
+  public static class BlankHolder extends RecyclerView.ViewHolder {
+
+    public BlankHolder(View itemView) {
+      super(itemView);
+    }
+  }
+
+  public static class FooterHolder extends RecyclerView.ViewHolder {
+
+    public FooterHolder(View itemView) {
+      super(itemView);
+    }
+  }
+
+  public static class HeaderHolder extends RecyclerView.ViewHolder {
+
+    public HeaderHolder(View itemView) {
+      super(itemView);
+    }
+  }
+
+  public static class SectionHolder extends RecyclerView.ViewHolder {
+
+    public SectionHolder(View itemView) {
+      super(itemView);
+    }
   }
 }
