@@ -1,2 +1,2 @@
-# recyclerview-multistate-endless-adapter
-Multistate and endless RecyclerView adapter
+# recyclerview-multistate-section-endless-adapter
+Multistate, section and endless RecyclerView adapter
