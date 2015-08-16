@@ -8,4 +8,6 @@
   <string name="text_header_recyclerview">Header RecyclerView</string>
   <string name="text_header_footer_recyclerview">Header Footer RecyclerView</string>
   <string name="text_multiple_header_recyclerview">Multiple Header RecyclerView</string>
+  <string name="text_multi_state_recyclerview">MultiState RecyclerView</string>
+  <string name="text_endless_recyclerview">Endless RecyclerView</string>
 </resources>

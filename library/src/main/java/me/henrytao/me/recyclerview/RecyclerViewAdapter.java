@@ -81,7 +81,7 @@ public abstract class RecyclerViewAdapter extends RecyclerView.Adapter {
 
   @Override
   public int getItemCount() {
-    return mBaseAdapter.getItemCount() + getHeaderCount() + getFooterCount();
+    return getBaseItemCount() + getHeaderCount() + getFooterCount();
   }
 
   @Override
@@ -132,6 +132,10 @@ public abstract class RecyclerViewAdapter extends RecyclerView.Adapter {
     return viewHolder == null ? onCreateBlankViewHolder(layoutInflater, parent) : viewHolder;
   }
 
+  public int getBaseItemCount() {
+    return mBaseAdapter.getItemCount();
+  }
+
   public int getDataPosition(int position) {
     return position - getHeaderCount();
   }
@@ -157,7 +161,7 @@ public abstract class RecyclerViewAdapter extends RecyclerView.Adapter {
   }
 
   protected int getFooterViewIndex(int position) {
-    int index = position - (mBaseAdapter.getItemCount() + getHeaderCount());
+    int index = position - (getBaseItemCount() + getHeaderCount());
     return index < 0 ? 0 : (index > getFooterCount() - 1 ? getFooterCount() - 1 : index);
   }
 
@@ -171,7 +175,7 @@ public abstract class RecyclerViewAdapter extends RecyclerView.Adapter {
   }
 
   protected boolean isFooterView(int position) {
-    int index = mBaseAdapter.getItemCount() + getHeaderCount();
+    int index = getBaseItemCount() + getHeaderCount();
     return position >= index && position < (index + getFooterCount());
   }
 

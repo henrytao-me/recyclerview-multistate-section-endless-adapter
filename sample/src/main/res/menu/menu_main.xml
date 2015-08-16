@@ -49,4 +49,16 @@
     android:title="@string/text_multiple_header_recyclerview"
     app:showAsAction="never" />
 
+  <item
+    android:id="@+id/action_multi_state_recyclerview"
+    android:orderInCategory="600"
+    android:title="@string/text_multi_state_recyclerview"
+    app:showAsAction="never" />
+
+  <item
+    android:id="@+id/action_endless_recyclerview"
+    android:orderInCategory="700"
+    android:title="@string/text_endless_recyclerview"
+    app:showAsAction="never" />
+
 </menu>

@@ -24,7 +24,7 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.ItemHolder
 
   public SimpleAdapter() {
     mData = new ArrayList<>();
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i < 50; i++) {
       mData.add(i);
     }
   }

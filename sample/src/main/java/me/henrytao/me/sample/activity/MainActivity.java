@@ -26,9 +26,11 @@ import android.view.MenuItem;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import me.henrytao.me.sample.R;
+import me.henrytao.me.sample.adapter.EndlessAdapter;
 import me.henrytao.me.sample.adapter.HeaderAdapter;
 import me.henrytao.me.sample.adapter.HeaderFooterAdapter;
 import me.henrytao.me.sample.adapter.MaterialAdapter;
+import me.henrytao.me.sample.adapter.MultiStateAdapter;
 import me.henrytao.me.sample.adapter.MultipleHeaderAdapter;
 import me.henrytao.me.sample.adapter.SimpleAdapter;
 
@@ -37,11 +39,15 @@ public class MainActivity extends AppCompatActivity {
   @Bind(R.id.recycler_view)
   RecyclerView vRecyclerView;
 
+  private EndlessAdapter mEndlessAdapter;
+
   private HeaderAdapter mHeaderAdapter;
 
   private HeaderFooterAdapter mHeaderFooterAdapter;
 
   private MaterialAdapter mMaterialAdapter;
+
+  private MultiStateAdapter mMultiStateAdapter;
 
   private MultipleHeaderAdapter mMultipleHeaderAdapter;
 
@@ -76,6 +82,14 @@ public class MainActivity extends AppCompatActivity {
         setTitle(R.string.text_multiple_header_recyclerview);
         vRecyclerView.setAdapter(mMultipleHeaderAdapter);
         return true;
+      case R.id.action_multi_state_recyclerview:
+        setTitle(R.string.text_multi_state_recyclerview);
+        vRecyclerView.setAdapter(mMultiStateAdapter);
+        return true;
+      case R.id.action_endless_recyclerview:
+        setTitle(R.string.text_endless_recyclerview);
+        vRecyclerView.setAdapter(mEndlessAdapter);
+        return true;
     }
     return super.onOptionsItemSelected(item);
   }
@@ -91,6 +105,8 @@ public class MainActivity extends AppCompatActivity {
     mHeaderAdapter = new HeaderAdapter(mSimpleAdapter);
     mHeaderFooterAdapter = new HeaderFooterAdapter(mSimpleAdapter);
     mMultipleHeaderAdapter = new MultipleHeaderAdapter(mSimpleAdapter);
+    mMultiStateAdapter = new MultiStateAdapter(mSimpleAdapter);
+    mEndlessAdapter = new EndlessAdapter(mSimpleAdapter);
 
     vRecyclerView.setHasFixedSize(false);
     vRecyclerView.setLayoutManager(new LinearLayoutManager(this));
