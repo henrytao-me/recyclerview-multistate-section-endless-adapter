@@ -19,6 +19,7 @@ package me.henrytao.me.recyclerview;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 
+import java.lang.ref.WeakReference;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -58,18 +59,7 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements Endless
     if (mEndlessEnabled.get() && !mAppendingData.get() && mOnEndlessListener != null
         && position >= getItemCount() - 1 - getEndlessThreshold()) {
       mAppendingData.set(true);
-      new AsyncTask<Void, Void, Object>() {
-
-        @Override
-        protected Void doInBackground(Void... params) {
-          return null;
-        }
-
-        @Override
-        protected void onPostExecute(Object object) {
-          mOnEndlessListener.onReachThreshold();
-        }
-      }.execute();
+      onReachThreshold();
     }
   }
 
@@ -86,5 +76,31 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements Endless
   @Override
   public void setOnEndlessListener(OnEndlessListener listener) {
     mOnEndlessListener = listener;
+  }
+
+  protected void onReachThreshold() {
+    new OnReachThresholdTask(mOnEndlessListener).execute();
+  }
+
+  private static class OnReachThresholdTask extends AsyncTask<Void, Void, Void> {
+
+    WeakReference<OnEndlessListener> mOnEndlessListenerWeakReference;
+
+    public OnReachThresholdTask(OnEndlessListener onEndlessListener) {
+      mOnEndlessListenerWeakReference = new WeakReference<>(onEndlessListener);
+    }
+
+    @Override
+    protected Void doInBackground(Void... params) {
+      return null;
+    }
+
+    @Override
+    protected void onPostExecute(Void aVoid) {
+      OnEndlessListener onEndlessListener = mOnEndlessListenerWeakReference.get();
+      if (onEndlessListener != null) {
+        onEndlessListener.onReachThreshold();
+      }
+    }
   }
 }
