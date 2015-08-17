@@ -18,6 +18,7 @@ package me.henrytao.me.sample.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import me.henrytao.me.recyclerview.RecyclerViewAdapter;
@@ -28,8 +29,11 @@ import me.henrytao.me.sample.R;
  */
 public class MultiStateAdapter extends RecyclerViewAdapter implements me.henrytao.me.recyclerview.MultiStateAdapter {
 
+  private static final int TAG_LOADING = 1;
+
   public MultiStateAdapter(RecyclerView.Adapter baseAdapter) {
     super(baseAdapter, 2, 0);
+    setViewState(TAG_LOADING, ItemViewType.HEADER, 1, View.VISIBLE);
   }
 
   @Override
@@ -43,10 +47,19 @@ public class MultiStateAdapter extends RecyclerViewAdapter implements me.henryta
     switch (index) {
       case 0:
         holder = new HeaderHolder(inflater.inflate(R.layout.holder_header, parent, false));
+        holder.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            if (isViewStateShowed(TAG_LOADING)) {
+              hideViewState(TAG_LOADING);
+            } else {
+              showViewState(TAG_LOADING);
+            }
+          }
+        });
         break;
       case 1:
         holder = new HeaderHolder(inflater.inflate(R.layout.holder_loading, parent, false));
-        setViewState(holder, index, 999);
         break;
     }
     return holder;

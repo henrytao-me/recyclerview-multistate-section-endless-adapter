@@ -16,14 +16,10 @@
 
 package me.henrytao.me.recyclerview;
 
-import android.support.annotation.IntDef;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 
 /**
  * Created by henrytao on 8/16/15.
@@ -164,13 +160,42 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
   }
 
   protected int getFooterViewIndex(int position) {
-    int index = position - (getBaseItemCount() + getHeaderCount());
-    return index < 0 ? 0 : (index > getFooterCount() - 1 ? getFooterCount() - 1 : index);
+    if (getFooterCount() == 0) {
+      return -1;
+    }
+    int startPosition = getBaseItemCount() + getHeaderCount();
+    int endPosition = startPosition + getFooterCount() - 1;
+    if (position < startPosition || position > endPosition) {
+      return -1;
+    }
+    return position - startPosition;
+  }
+
+  protected int getFooterViewPosition(int index) {
+    if (getFooterCount() == 0 || index < 0 || index >= getFooterCount()) {
+      return -1;
+    }
+    int startPosition = getBaseItemCount() + getHeaderCount();
+    return startPosition + index;
   }
 
   protected int getHeaderViewIndex(int position) {
-    int index = position;
-    return index < 0 ? 0 : (index > getHeaderCount() - 1 ? getHeaderCount() - 1 : index);
+    if (getHeaderCount() == 0) {
+      return -1;
+    }
+    int startPosition = 0;
+    int endPosition = startPosition + getHeaderCount() - 1;
+    if (position < startPosition || position > endPosition) {
+      return -1;
+    }
+    return position;
+  }
+
+  protected int getHeaderViewPosition(int index) {
+    if (getHeaderCount() == 0 || index < 0 || index >= getHeaderCount()) {
+      return -1;
+    }
+    return index;
   }
 
   protected boolean isBlankView(int position) {
@@ -178,12 +203,11 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
   }
 
   protected boolean isFooterView(int position) {
-    int index = getBaseItemCount() + getHeaderCount();
-    return position >= index && position < (index + getFooterCount());
+    return getFooterViewIndex(position) >= 0;
   }
 
   protected boolean isHeaderView(int position) {
-    return position >= 0 && position < getHeaderCount();
+    return getHeaderViewIndex(position) >= 0;
   }
 
   protected boolean isItemView(int position) {
@@ -204,12 +228,6 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
     }
   }
 
-  @IntDef({View.VISIBLE, View.INVISIBLE, View.GONE})
-  @Retention(RetentionPolicy.SOURCE)
-  public @interface Visibility {
-
-  }
-
   public static class BaseHolder extends RecyclerView.ViewHolder {
 
     protected View mItemView;
@@ -223,8 +241,8 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
       return mItemView;
     }
 
-    public void setVisibility(@Visibility int visibility) {
-      getItemView().setVisibility(visibility);
+    public void setOnClickListener(View.OnClickListener listener) {
+      itemView.setOnClickListener(listener);
     }
   }
 

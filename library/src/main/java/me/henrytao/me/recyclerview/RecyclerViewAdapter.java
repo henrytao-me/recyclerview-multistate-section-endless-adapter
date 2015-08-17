@@ -60,8 +60,45 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements Endless
   }
 
   @Override
+  public int getItemViewType(int position) {
+    ItemViewType itemViewType = null;
+    int index = -1;
+    if (isFooterView(position)) {
+      itemViewType = ItemViewType.FOOTER;
+      index = getFooterViewIndex(position);
+    } else if (isHeaderView(position)) {
+      itemViewType = ItemViewType.HEADER;
+      index = getHeaderViewIndex(position);
+    }
+    if (itemViewType != null) {
+      for (Map.Entry<Integer, ViewState> entry : mViewState.entrySet()) {
+        if (entry.getValue().isMatch(itemViewType, index) && entry.getValue().getVisibility() == View.GONE) {
+          return ItemViewType.BLANK.getValue() * getChunkSize();
+        }
+      }
+    }
+    return super.getItemViewType(position);
+  }
+
+  @Override
   public void hideViewState(int tag) {
     setViewStateVisibility(tag, View.GONE);
+  }
+
+  @Override
+  public boolean isViewStateHidden(int tag) {
+    if (mViewState.containsKey(tag)) {
+      return mViewState.get(tag).getVisibility() == View.GONE;
+    }
+    return true;
+  }
+
+  @Override
+  public boolean isViewStateShowed(int tag) {
+    if (mViewState.containsKey(tag)) {
+      return mViewState.get(tag).getVisibility() == View.VISIBLE;
+    }
+    return false;
   }
 
   @Override
@@ -71,20 +108,6 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements Endless
         && position >= getItemCount() - 1 - getEndlessThreshold()) {
       mAppendingData.set(true);
       onReachThreshold();
-    }
-
-    int index = -1;
-    if (isHeaderView(position)) {
-      index = getHeaderViewIndex(position);
-    } else if (isFooterView(position)) {
-      index = getFooterViewIndex(position);
-    }
-    if (index >= 0) {
-      for (Map.Entry<Integer, ViewState> entry : mViewState.entrySet()) {
-        if (entry.getValue().isMatch(holder, index)) {
-          entry.getValue().setHolder((BaseHolder) holder);
-        }
-      }
     }
   }
 
@@ -104,29 +127,27 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements Endless
   }
 
   @Override
-  public void setViewState(HeaderHolder holder, int index, int tag) {
-    setViewState(holder, index, tag, View.GONE);
-  }
-
-  @Override
-  public void setViewState(FooterHolder holder, int index, int tag) {
-    setViewState(holder, index, tag, View.GONE);
-  }
-
-  @Override
-  public void setViewState(HeaderHolder holder, int index, int tag, @Visibility int initVisibility) {
-    setViewState((BaseHolder) holder, index, tag, initVisibility);
-  }
-
-  @Override
-  public void setViewState(FooterHolder holder, int index, int tag, @Visibility int initVisibility) {
-    setViewState((BaseHolder) holder, index, tag, initVisibility);
+  public void setViewState(int tag, ItemViewType itemViewType, int index, @Visibility int initVisibility) {
+    if ((itemViewType == ItemViewType.HEADER && index < getHeaderCount()) ||
+        (itemViewType == ItemViewType.FOOTER && index < getFooterCount())) {
+      mViewState.put(tag, new ViewState(itemViewType, index, initVisibility));
+    }
   }
 
   @Override
   public void setViewStateVisibility(int tag, @Visibility int visibility) {
     if (mViewState.containsKey(tag)) {
-      mViewState.get(tag).setVisibility(visibility);
+      ViewState viewState = mViewState.get(tag);
+      viewState.setVisibility(visibility);
+      int position = -1;
+      if (viewState.getItemViewType() == ItemViewType.FOOTER) {
+        position = getFooterViewPosition(viewState.getIndex());
+      } else if (viewState.getItemViewType() == ItemViewType.HEADER) {
+        position = getHeaderViewPosition(viewState.getIndex());
+      }
+      if (position >= 0) {
+        notifyItemChanged(position);
+      }
     }
   }
 
@@ -137,14 +158,6 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements Endless
 
   protected void onReachThreshold() {
     new OnReachThresholdTask(mOnEndlessListener).execute();
-  }
-
-  protected void setViewState(BaseHolder holder, int index, int tag, @Visibility int initVisibility) {
-    if (!mViewState.containsKey(tag)) {
-      mViewState.put(tag, new ViewState(holder, index, initVisibility));
-    } else {
-      mViewState.get(tag).setHolder(holder);
-    }
   }
 
   private static class OnReachThresholdTask extends AsyncTask<Void, Void, Void> {
@@ -171,48 +184,36 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements Endless
 
   public static class ViewState {
 
-    private WeakReference<BaseHolder> mHolderWeakReference;
-
     private int mIndex;
 
     private ItemViewType mItemViewType;
 
     private int mVisibility;
 
-    public ViewState(BaseHolder holder, int index, int visibility) {
+    public ViewState(ItemViewType itemViewType, int index, int initVisibility) {
+      mItemViewType = itemViewType;
       mIndex = index;
+      mVisibility = initVisibility;
+    }
+
+    public int getIndex() {
+      return mIndex;
+    }
+
+    public ItemViewType getItemViewType() {
+      return mItemViewType;
+    }
+
+    public int getVisibility() {
+      return mVisibility;
+    }
+
+    public void setVisibility(int visibility) {
       mVisibility = visibility;
-      setHolder(holder);
-      refresh();
     }
 
-    public BaseHolder getHolder() {
-      return mHolderWeakReference.get();
-    }
-
-    public void setHolder(BaseHolder holder) {
-      if (mHolderWeakReference != null) {
-        mHolderWeakReference.clear();
-      }
-      mHolderWeakReference = new WeakReference<>(holder);
-      mItemViewType = holder instanceof HeaderHolder ? ItemViewType.HEADER : (holder instanceof FooterHolder ? ItemViewType.FOOTER : null);
-      refresh();
-    }
-
-    public boolean isMatch(RecyclerView.ViewHolder holder, int index) {
-      return (holder instanceof HeaderHolder && mItemViewType == ItemViewType.HEADER && index == mIndex) ||
-          (holder instanceof FooterHolder && mItemViewType == ItemViewType.FOOTER && index == index);
-    }
-
-    public void refresh() {
-      setVisibility(mVisibility);
-    }
-
-    public void setVisibility(@Visibility int visibility) {
-      mVisibility = visibility;
-      if (getHolder() != null) {
-        getHolder().setVisibility(mVisibility);
-      }
+    public boolean isMatch(ItemViewType itemViewType, int index) {
+      return itemViewType == mItemViewType && index == mIndex;
     }
   }
 }
