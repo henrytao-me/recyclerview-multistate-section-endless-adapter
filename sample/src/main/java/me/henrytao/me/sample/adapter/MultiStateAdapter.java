@@ -29,16 +29,26 @@ import me.henrytao.me.sample.R;
 public class MultiStateAdapter extends RecyclerViewAdapter implements me.henrytao.me.recyclerview.MultiStateAdapter {
 
   public MultiStateAdapter(RecyclerView.Adapter baseAdapter) {
-    super(baseAdapter, 1, 0);
+    super(baseAdapter, 2, 0);
   }
 
   @Override
-  public RecyclerView.ViewHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent, int index) {
+  public FooterHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent, int index) {
     return null;
   }
 
   @Override
-  public RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent, int index) {
-    return new HeaderHolder(inflater.inflate(R.layout.holder_header, parent, false));
+  public HeaderHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent, int index) {
+    HeaderHolder holder = null;
+    switch (index) {
+      case 0:
+        holder = new HeaderHolder(inflater.inflate(R.layout.holder_header, parent, false));
+        break;
+      case 1:
+        holder = new HeaderHolder(inflater.inflate(R.layout.holder_loading, parent, false));
+        setViewState(holder, index, 999);
+        break;
+    }
+    return holder;
   }
 }

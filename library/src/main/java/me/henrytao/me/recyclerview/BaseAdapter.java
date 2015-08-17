@@ -16,19 +16,23 @@
 
 package me.henrytao.me.recyclerview;
 
+import android.support.annotation.IntDef;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
  * Created by henrytao on 8/16/15.
  */
 public abstract class BaseAdapter extends RecyclerView.Adapter {
 
-  public abstract RecyclerView.ViewHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent, int index);
+  public abstract FooterHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent, int index);
 
-  public abstract RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent, int index);
+  public abstract HeaderHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent, int index);
 
   private static final int CHUNK_SIZE = 1000;
 
@@ -200,21 +204,45 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
     }
   }
 
-  public static class BlankHolder extends RecyclerView.ViewHolder {
+  @IntDef({View.VISIBLE, View.INVISIBLE, View.GONE})
+  @Retention(RetentionPolicy.SOURCE)
+  public @interface Visibility {
+
+  }
+
+  public static class BaseHolder extends RecyclerView.ViewHolder {
+
+    protected View mItemView;
+
+    public BaseHolder(View itemView) {
+      super(itemView);
+      mItemView = itemView;
+    }
+
+    public View getItemView() {
+      return mItemView;
+    }
+
+    public void setVisibility(@Visibility int visibility) {
+      getItemView().setVisibility(visibility);
+    }
+  }
+
+  public static class BlankHolder extends BaseHolder {
 
     public BlankHolder(View itemView) {
       super(itemView);
     }
   }
 
-  public static class FooterHolder extends RecyclerView.ViewHolder {
+  public static class FooterHolder extends BaseHolder {
 
     public FooterHolder(View itemView) {
       super(itemView);
     }
   }
 
-  public static class HeaderHolder extends RecyclerView.ViewHolder {
+  public static class HeaderHolder extends BaseHolder {
 
     public HeaderHolder(View itemView) {
       super(itemView);

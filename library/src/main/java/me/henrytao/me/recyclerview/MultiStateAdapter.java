@@ -16,9 +16,24 @@
 
 package me.henrytao.me.recyclerview;
 
+import me.henrytao.me.recyclerview.BaseAdapter.Visibility;
+
 /**
  * Created by henrytao on 8/16/15.
  */
 public interface MultiStateAdapter {
 
+  void hideViewState(int tag);
+
+  void setViewState(BaseAdapter.HeaderHolder holder, int index, int tag);
+
+  void setViewState(BaseAdapter.FooterHolder holder, int index, int tag);
+
+  void setViewState(BaseAdapter.HeaderHolder holder, int index, int tag, @Visibility int initVisibility);
+
+  void setViewState(BaseAdapter.FooterHolder holder, int index, int tag, @Visibility int initVisibility);
+
+  void setViewStateVisibility(int tag, @Visibility int visibility);
+
+  void showViewState(int tag);
 }
