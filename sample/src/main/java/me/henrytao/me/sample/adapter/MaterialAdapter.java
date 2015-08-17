@@ -33,12 +33,12 @@ public class MaterialAdapter extends RecyclerViewAdapter {
   }
 
   @Override
-  public RecyclerView.ViewHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent, int index) {
+  public FooterHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent, int index) {
     return new FooterHolder(inflater.inflate(R.layout.item_spacing, parent, false));
   }
 
   @Override
-  public RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent, int index) {
+  public HeaderHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent, int index) {
     return new HeaderHolder(inflater.inflate(R.layout.item_spacing, parent, false));
   }
 }

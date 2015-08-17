@@ -26,9 +26,9 @@ import android.view.ViewGroup;
  */
 public abstract class BaseAdapter extends RecyclerView.Adapter {
 
-  public abstract RecyclerView.ViewHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent, int index);
+  public abstract FooterHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent, int index);
 
-  public abstract RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent, int index);
+  public abstract HeaderHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent, int index);
 
   private static final int CHUNK_SIZE = 1000;
 
@@ -160,13 +160,42 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
   }
 
   protected int getFooterViewIndex(int position) {
-    int index = position - (getBaseItemCount() + getHeaderCount());
-    return index < 0 ? 0 : (index > getFooterCount() - 1 ? getFooterCount() - 1 : index);
+    if (getFooterCount() == 0) {
+      return -1;
+    }
+    int startPosition = getBaseItemCount() + getHeaderCount();
+    int endPosition = startPosition + getFooterCount() - 1;
+    if (position < startPosition || position > endPosition) {
+      return -1;
+    }
+    return position - startPosition;
+  }
+
+  protected int getFooterViewPosition(int index) {
+    if (getFooterCount() == 0 || index < 0 || index >= getFooterCount()) {
+      return -1;
+    }
+    int startPosition = getBaseItemCount() + getHeaderCount();
+    return startPosition + index;
   }
 
   protected int getHeaderViewIndex(int position) {
-    int index = position;
-    return index < 0 ? 0 : (index > getHeaderCount() - 1 ? getHeaderCount() - 1 : index);
+    if (getHeaderCount() == 0) {
+      return -1;
+    }
+    int startPosition = 0;
+    int endPosition = startPosition + getHeaderCount() - 1;
+    if (position < startPosition || position > endPosition) {
+      return -1;
+    }
+    return position;
+  }
+
+  protected int getHeaderViewPosition(int index) {
+    if (getHeaderCount() == 0 || index < 0 || index >= getHeaderCount()) {
+      return -1;
+    }
+    return index;
   }
 
   protected boolean isBlankView(int position) {
@@ -174,12 +203,11 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
   }
 
   protected boolean isFooterView(int position) {
-    int index = getBaseItemCount() + getHeaderCount();
-    return position >= index && position < (index + getFooterCount());
+    return getFooterViewIndex(position) >= 0;
   }
 
   protected boolean isHeaderView(int position) {
-    return position >= 0 && position < getHeaderCount();
+    return getHeaderViewIndex(position) >= 0;
   }
 
   protected boolean isItemView(int position) {
@@ -200,21 +228,39 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
     }
   }
 
-  public static class BlankHolder extends RecyclerView.ViewHolder {
+  public static class BaseHolder extends RecyclerView.ViewHolder {
+
+    protected View mItemView;
+
+    public BaseHolder(View itemView) {
+      super(itemView);
+      mItemView = itemView;
+    }
+
+    public View getItemView() {
+      return mItemView;
+    }
+
+    public void setOnClickListener(View.OnClickListener listener) {
+      itemView.setOnClickListener(listener);
+    }
+  }
+
+  public static class BlankHolder extends BaseHolder {
 
     public BlankHolder(View itemView) {
       super(itemView);
     }
   }
 
-  public static class FooterHolder extends RecyclerView.ViewHolder {
+  public static class FooterHolder extends BaseHolder {
 
     public FooterHolder(View itemView) {
       super(itemView);
     }
   }
 
-  public static class HeaderHolder extends RecyclerView.ViewHolder {
+  public static class HeaderHolder extends BaseHolder {
 
     public HeaderHolder(View itemView) {
       super(itemView);
