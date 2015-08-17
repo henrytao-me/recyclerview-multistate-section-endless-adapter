@@ -12,7 +12,6 @@ import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import me.henrytao.me.recyclerview.RecyclerViewAdapter;
 import me.henrytao.me.sample.R;
 
 /**
@@ -42,6 +41,14 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.ItemHolder
   @Override
   public SimpleAdapter.ItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
     return new ItemHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_main, parent, false));
+  }
+
+  public void addMoreItems(int numOfItems) {
+    int n = getItemCount();
+    for (int i = 0; i < numOfItems; i++) {
+      mData.add(n++);
+    }
+    notifyDataSetChanged();
   }
 
   public static class ItemHolder extends RecyclerView.ViewHolder {

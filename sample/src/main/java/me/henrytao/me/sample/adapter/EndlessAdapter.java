@@ -26,7 +26,7 @@ import me.henrytao.me.sample.R;
 /**
  * Created by henrytao on 8/16/15.
  */
-public class EndlessAdapter extends RecyclerViewAdapter implements me.henrytao.me.recyclerview.EndlessAdapter {
+public class EndlessAdapter extends RecyclerViewAdapter {
 
   public EndlessAdapter(RecyclerView.Adapter baseAdapter) {
     super(baseAdapter, 1, 0);

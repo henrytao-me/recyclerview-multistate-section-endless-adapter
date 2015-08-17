@@ -21,4 +21,18 @@ package me.henrytao.me.recyclerview;
  */
 public interface EndlessAdapter {
 
+  int getEndlessThreshold();
+
+  void setEndlessThreshold(int threshold);
+
+  void onNext();
+
+  void setEndlessEnabled(boolean enabled);
+
+  void setOnEndlessListener(OnEndlessListener listener);
+
+  interface OnEndlessListener {
+
+    void onReachThreshold();
+  }
 }

@@ -17,6 +17,7 @@
 package me.henrytao.me.sample.activity;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -34,12 +35,16 @@ import me.henrytao.me.sample.adapter.MultiStateAdapter;
 import me.henrytao.me.sample.adapter.MultipleHeaderAdapter;
 import me.henrytao.me.sample.adapter.SimpleAdapter;
 
+import static me.henrytao.me.recyclerview.EndlessAdapter.OnEndlessListener;
+
 public class MainActivity extends AppCompatActivity {
 
   @Bind(R.id.recycler_view)
   RecyclerView vRecyclerView;
 
   private EndlessAdapter mEndlessAdapter;
+
+  private Handler mHandler;
 
   private HeaderAdapter mHeaderAdapter;
 
@@ -52,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
   private MultipleHeaderAdapter mMultipleHeaderAdapter;
 
   private SimpleAdapter mSimpleAdapter;
+
+  private SimpleAdapter mSimpleEndlessAdapter;
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
@@ -106,7 +113,17 @@ public class MainActivity extends AppCompatActivity {
     mHeaderFooterAdapter = new HeaderFooterAdapter(mSimpleAdapter);
     mMultipleHeaderAdapter = new MultipleHeaderAdapter(mSimpleAdapter);
     mMultiStateAdapter = new MultiStateAdapter(mSimpleAdapter);
-    mEndlessAdapter = new EndlessAdapter(mSimpleAdapter);
+
+    mHandler = new Handler();
+    mSimpleEndlessAdapter = new SimpleAdapter();
+    mEndlessAdapter = new EndlessAdapter(mSimpleEndlessAdapter);
+    mEndlessAdapter.setOnEndlessListener(new OnEndlessListener() {
+      @Override
+      public void onReachThreshold() {
+        mSimpleEndlessAdapter.addMoreItems(10);
+        mEndlessAdapter.onNext();
+      }
+    });
 
     vRecyclerView.setHasFixedSize(false);
     vRecyclerView.setLayoutManager(new LinearLayoutManager(this));
