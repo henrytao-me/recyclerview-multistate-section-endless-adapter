@@ -33,6 +33,16 @@ public class HeaderAdapter extends RecyclerViewAdapter {
   }
 
   @Override
+  public void onBindFooterViewHolder(RecyclerView.ViewHolder holder, int index) {
+
+  }
+
+  @Override
+  public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder, int index) {
+
+  }
+
+  @Override
   public RecyclerView.ViewHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent, int index) {
     return null;
   }

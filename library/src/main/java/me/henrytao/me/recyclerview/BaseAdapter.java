@@ -26,6 +26,10 @@ import android.view.ViewGroup;
  */
 public abstract class BaseAdapter extends RecyclerView.Adapter {
 
+  public abstract void onBindFooterViewHolder(RecyclerView.ViewHolder holder, int index);
+
+  public abstract void onBindHeaderViewHolder(RecyclerView.ViewHolder holder, int index);
+
   public abstract RecyclerView.ViewHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent, int index);
 
   public abstract RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent, int index);
@@ -98,7 +102,11 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
 
   @Override
   public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-    if (!(holder instanceof BlankHolder || holder instanceof HeaderHolder || holder instanceof FooterHolder)) {
+    if (isFooterView(position)) {
+      onBindFooterViewHolder(holder, getFooterViewIndex(position));
+    } else if (isHeaderView(position)) {
+      onBindHeaderViewHolder(holder, getHeaderViewIndex(position));
+    } else if (isItemView(position)) {
       mBaseAdapter.onBindViewHolder(holder, getDataPosition(position));
     }
   }
