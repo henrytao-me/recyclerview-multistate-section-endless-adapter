@@ -26,9 +26,9 @@ import android.view.ViewGroup;
  */
 public abstract class BaseAdapter extends RecyclerView.Adapter {
 
-  public abstract FooterHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent, int index);
+  public abstract RecyclerView.ViewHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent, int index);
 
-  public abstract HeaderHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent, int index);
+  public abstract RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent, int index);
 
   private static final int CHUNK_SIZE = 1000;
 

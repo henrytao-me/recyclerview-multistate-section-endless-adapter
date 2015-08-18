@@ -31,8 +31,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public abstract class RecyclerViewAdapter extends BaseAdapter implements EndlessAdapter, MultiStateAdapter {
 
-  ConcurrentMap<Integer, ViewState> mViewState = new ConcurrentHashMap<>();
-
   private AtomicBoolean mAppendingData = new AtomicBoolean(false);
 
   private AtomicBoolean mEndlessEnabled = new AtomicBoolean(true);
@@ -40,6 +38,8 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements Endless
   private int mEndlessThreshold = 0;
 
   private OnEndlessListener mOnEndlessListener;
+
+  private ConcurrentMap<Integer, ViewState> mViewState = new ConcurrentHashMap<>();
 
   public RecyclerViewAdapter(RecyclerView.Adapter baseAdapter, int headerCount, int footerCount) {
     super(baseAdapter, headerCount, footerCount);

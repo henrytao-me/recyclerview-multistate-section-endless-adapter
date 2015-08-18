@@ -17,12 +17,12 @@ public class HeaderFooterAdapter extends RecyclerViewAdapter {
   }
 
   @Override
-  public FooterHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent, int index) {
+  public RecyclerView.ViewHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent, int index) {
     return new FooterHolder(inflater.inflate(R.layout.holder_footer, parent, false));
   }
 
   @Override
-  public HeaderHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent, int index) {
+  public RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent, int index) {
     return new HeaderHolder(inflater.inflate(R.layout.holder_header, parent, false));
   }
 }
