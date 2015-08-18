@@ -19,7 +19,7 @@ import me.henrytao.me.sample.R;
  */
 public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.ItemHolder> {
 
-  List<Integer> mData;
+  private List<Integer> mData;
 
   public SimpleAdapter() {
     mData = new ArrayList<>();

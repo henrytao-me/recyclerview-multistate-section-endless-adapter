@@ -20,25 +20,25 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import me.henrytao.me.recyclerview.RecyclerViewAdapter;
+import me.henrytao.me.recyclerview.SimpleRecyclerViewAdapter;
 import me.henrytao.me.sample.R;
 
 /**
  * Created by henrytao on 8/16/15.
  */
-public class MaterialAdapter extends RecyclerViewAdapter {
+public class MaterialAdapter extends SimpleRecyclerViewAdapter {
 
   public MaterialAdapter(RecyclerView.Adapter baseAdapter) {
-    super(baseAdapter, 1, 1);
+    super(baseAdapter);
   }
 
   @Override
-  public RecyclerView.ViewHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent, int index) {
+  public RecyclerView.ViewHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent) {
     return new FooterHolder(inflater.inflate(R.layout.item_spacing, parent, false));
   }
 
   @Override
-  public RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent, int index) {
+  public RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent) {
     return new HeaderHolder(inflater.inflate(R.layout.item_spacing, parent, false));
   }
 }
