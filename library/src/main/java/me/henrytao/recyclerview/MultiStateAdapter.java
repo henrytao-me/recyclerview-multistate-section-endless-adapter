@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.henrytao.me.recyclerview;
+package me.henrytao.recyclerview;
 
 import android.support.annotation.IntDef;
 import android.view.View;
@@ -22,7 +22,7 @@ import android.view.View;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import me.henrytao.me.recyclerview.BaseAdapter.ItemViewType;
+import me.henrytao.recyclerview.BaseAdapter.ItemViewType;
 
 /**
  * Created by henrytao on 8/16/15.

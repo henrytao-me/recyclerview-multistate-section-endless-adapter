@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.henrytao.me.sample.activity;
+package me.henrytao.sample.activity;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,15 +27,15 @@ import android.view.MenuItem;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import me.henrytao.me.sample.R;
-import me.henrytao.me.sample.adapter.EndlessAdapter;
-import me.henrytao.me.sample.adapter.HeaderAdapter;
-import me.henrytao.me.sample.adapter.HeaderFooterAdapter;
-import me.henrytao.me.sample.adapter.MaterialAdapter;
-import me.henrytao.me.sample.adapter.MultiStateAdapter;
-import me.henrytao.me.sample.adapter.MultipleHeaderAdapter;
-import me.henrytao.me.sample.adapter.SimpleAdapter;
+import me.henrytao.sample.adapter.EndlessAdapter;
+import me.henrytao.sample.adapter.HeaderAdapter;
+import me.henrytao.sample.adapter.HeaderFooterAdapter;
+import me.henrytao.sample.adapter.MaterialAdapter;
+import me.henrytao.sample.adapter.MultiStateAdapter;
+import me.henrytao.sample.adapter.MultipleHeaderAdapter;
+import me.henrytao.sample.adapter.SimpleAdapter;
 
-import static me.henrytao.me.recyclerview.EndlessAdapter.OnEndlessListener;
+import static me.henrytao.recyclerview.EndlessAdapter.OnEndlessListener;
 
 public class MainActivity extends AppCompatActivity {
 

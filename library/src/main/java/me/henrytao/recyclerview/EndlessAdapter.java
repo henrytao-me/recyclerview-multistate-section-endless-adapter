@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.henrytao.me.recyclerview;
+package me.henrytao.recyclerview;
 
 /**
  * Created by henrytao on 8/16/15.
