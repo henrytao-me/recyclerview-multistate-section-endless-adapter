@@ -14,22 +14,23 @@
  * limitations under the License.
  */
 
-package me.henrytao.me.sample.adapter;
+package me.henrytao.recyclerview;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import me.henrytao.me.recyclerview.RecyclerViewAdapter;
-import me.henrytao.me.sample.R;
-
 /**
- * Created by henrytao on 8/16/15.
+ * Created by henrytao on 8/18/15.
  */
-public class HeaderAdapter extends RecyclerViewAdapter {
+public abstract class SimpleRecyclerViewAdapter extends RecyclerViewAdapter {
 
-  public HeaderAdapter(RecyclerView.Adapter baseAdapter) {
-    super(baseAdapter, 1, 0);
+  public abstract RecyclerView.ViewHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent);
+
+  public abstract RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent);
+
+  public SimpleRecyclerViewAdapter(RecyclerView.Adapter baseAdapter) {
+    super(baseAdapter, 1, 1);
   }
 
   @Override
@@ -44,11 +45,11 @@ public class HeaderAdapter extends RecyclerViewAdapter {
 
   @Override
   public RecyclerView.ViewHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent, int index) {
-    return null;
+    return onCreateFooterViewHolder(inflater, parent);
   }
 
   @Override
   public RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent, int index) {
-    return new HeaderHolder(inflater.inflate(R.layout.holder_header, parent, false));
+    return onCreateHeaderViewHolder(inflater, parent);
   }
 }

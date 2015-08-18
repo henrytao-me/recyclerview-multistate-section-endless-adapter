@@ -14,22 +14,26 @@
  * limitations under the License.
  */
 
-package me.henrytao.me.sample.adapter;
+package me.henrytao.sample.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
-import me.henrytao.me.recyclerview.RecyclerViewAdapter;
+import me.henrytao.recyclerview.RecyclerViewAdapter;
 import me.henrytao.me.sample.R;
 
 /**
  * Created by henrytao on 8/16/15.
  */
-public class EndlessAdapter extends RecyclerViewAdapter {
+public class MultiStateAdapter extends RecyclerViewAdapter {
 
-  public EndlessAdapter(RecyclerView.Adapter baseAdapter) {
-    super(baseAdapter, 1, 0);
+  private static final int TAG_LOADING = 1;
+
+  public MultiStateAdapter(RecyclerView.Adapter baseAdapter) {
+    super(baseAdapter, 2, 0);
+    setViewState(TAG_LOADING, ItemViewType.HEADER, 1, View.VISIBLE);
   }
 
   @Override
@@ -49,6 +53,25 @@ public class EndlessAdapter extends RecyclerViewAdapter {
 
   @Override
   public RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent, int index) {
-    return new HeaderHolder(inflater.inflate(R.layout.holder_header, parent, false));
+    HeaderHolder holder = null;
+    switch (index) {
+      case 0:
+        holder = new HeaderHolder(inflater.inflate(R.layout.holder_header, parent, false));
+        holder.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            if (isViewStateShowed(TAG_LOADING)) {
+              hideViewState(TAG_LOADING);
+            } else {
+              showViewState(TAG_LOADING);
+            }
+          }
+        });
+        break;
+      case 1:
+        holder = new HeaderHolder(inflater.inflate(R.layout.holder_loading, parent, false));
+        break;
+    }
+    return holder;
   }
 }
