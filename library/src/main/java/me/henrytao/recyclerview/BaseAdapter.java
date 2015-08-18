@@ -42,7 +42,10 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
 
   private final int mHeaderCount;
 
+  private boolean mIsBaseAdapterEnabled;
+
   public BaseAdapter(RecyclerView.Adapter baseAdapter, int headerCount, int footerCount) {
+    mIsBaseAdapterEnabled = true;
     mBaseAdapter = baseAdapter;
     mHeaderCount = headerCount;
     mFooterCount = footerCount;
@@ -50,31 +53,41 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
       @Override
       public void onChanged() {
         super.onChanged();
-        notifyDataSetChanged();
+        if (mIsBaseAdapterEnabled) {
+          notifyDataSetChanged();
+        }
       }
 
       @Override
       public void onItemRangeChanged(int positionStart, int itemCount) {
         super.onItemRangeChanged(positionStart, itemCount);
-        notifyItemRangeChanged(positionStart, itemCount);
+        if (mIsBaseAdapterEnabled) {
+          notifyItemRangeChanged(positionStart, itemCount);
+        }
       }
 
       @Override
       public void onItemRangeInserted(int positionStart, int itemCount) {
         super.onItemRangeInserted(positionStart, itemCount);
-        notifyItemRangeInserted(positionStart, itemCount);
+        if (mIsBaseAdapterEnabled) {
+          notifyItemRangeInserted(positionStart, itemCount);
+        }
       }
 
       @Override
       public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
         super.onItemRangeMoved(fromPosition, toPosition, itemCount);
-        notifyItemMoved(fromPosition, toPosition);
+        if (mIsBaseAdapterEnabled) {
+          notifyItemMoved(fromPosition, toPosition);
+        }
       }
 
       @Override
       public void onItemRangeRemoved(int positionStart, int itemCount) {
         super.onItemRangeRemoved(positionStart, itemCount);
-        notifyItemRangeRemoved(positionStart, itemCount);
+        if (mIsBaseAdapterEnabled) {
+          notifyItemRangeRemoved(positionStart, itemCount);
+        }
       }
     });
   }
@@ -140,6 +153,9 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
   }
 
   public int getBaseItemCount() {
+    if (!mIsBaseAdapterEnabled) {
+      return 0;
+    }
     return mBaseAdapter.getItemCount();
   }
 
@@ -157,6 +173,17 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
 
   public int getPosition(int dataPosition) {
     return dataPosition + getHeaderCount();
+  }
+
+  public boolean isBaseAdapterEnabled() {
+    return mIsBaseAdapterEnabled;
+  }
+
+  public void setBaseAdapterEnabled(boolean enabled) {
+    if (enabled != mIsBaseAdapterEnabled) {
+      mIsBaseAdapterEnabled = enabled;
+      notifyDataSetChanged();
+    }
   }
 
   public RecyclerView.ViewHolder onCreateBlankViewHolder(LayoutInflater inflater, ViewGroup parent) {
