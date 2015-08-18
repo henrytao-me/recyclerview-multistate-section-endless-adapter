@@ -37,12 +37,12 @@ public class MultiStateAdapter extends RecyclerViewAdapter implements me.henryta
   }
 
   @Override
-  public FooterHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent, int index) {
+  public RecyclerView.ViewHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent, int index) {
     return null;
   }
 
   @Override
-  public HeaderHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent, int index) {
+  public RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent, int index) {
     HeaderHolder holder = null;
     switch (index) {
       case 0:
