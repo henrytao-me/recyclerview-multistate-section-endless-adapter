@@ -62,7 +62,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
       public void onItemRangeChanged(int positionStart, int itemCount) {
         super.onItemRangeChanged(positionStart, itemCount);
         if (mIsBaseAdapterEnabled) {
-          notifyItemRangeChanged(positionStart, itemCount);
+          notifyItemRangeChanged(getPosition(positionStart), itemCount);
         }
       }
 
@@ -70,7 +70,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
       public void onItemRangeInserted(int positionStart, int itemCount) {
         super.onItemRangeInserted(positionStart, itemCount);
         if (mIsBaseAdapterEnabled) {
-          notifyItemRangeInserted(positionStart, itemCount);
+          notifyItemRangeInserted(getPosition(positionStart), itemCount);
         }
       }
 
@@ -78,7 +78,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
       public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
         super.onItemRangeMoved(fromPosition, toPosition, itemCount);
         if (mIsBaseAdapterEnabled) {
-          notifyItemMoved(fromPosition, toPosition);
+          notifyItemMoved(getPosition(fromPosition), getPosition(toPosition));
         }
       }
 
@@ -86,7 +86,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
       public void onItemRangeRemoved(int positionStart, int itemCount) {
         super.onItemRangeRemoved(positionStart, itemCount);
         if (mIsBaseAdapterEnabled) {
-          notifyItemRangeRemoved(positionStart, itemCount);
+          notifyItemRangeRemoved(getPosition(positionStart), itemCount);
         }
       }
     });
