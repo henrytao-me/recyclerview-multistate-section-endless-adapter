@@ -117,6 +117,11 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements Endless
   }
 
   @Override
+  public void onViewStateVisibilityChange(int tag, ItemViewType itemViewType, int index, @Visibility int visibility, int position) {
+    notifyItemChanged(position);
+  }
+
+  @Override
   public void setEndlessEnabled(boolean enabled) {
     mEndlessEnabled.set(enabled);
   }
@@ -149,8 +154,8 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements Endless
       } else if (viewState.getItemViewType() == ItemViewType.HEADER) {
         position = getHeaderViewPosition(viewState.getIndex());
       }
-      if (position >= 0) {
-        notifyItemChanged(position);
+      if (position >= 0 && position < getItemCount()) {
+        onViewStateVisibilityChange(tag, viewState.getItemViewType(), viewState.getIndex(), visibility, position);
       }
     }
   }
