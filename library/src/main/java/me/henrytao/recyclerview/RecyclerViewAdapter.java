@@ -21,25 +21,23 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by henrytao on 8/16/15.
  */
 public abstract class RecyclerViewAdapter extends BaseAdapter implements EndlessAdapter, MultiStateAdapter {
 
-  private AtomicBoolean mAppendingData = new AtomicBoolean(false);
+  private boolean mAppendingData = false;
 
-  private AtomicBoolean mEndlessEnabled = new AtomicBoolean(true);
+  private boolean mEndlessEnabled = true;
 
   private int mEndlessThreshold = 0;
 
   private OnEndlessListener mOnEndlessListener;
 
-  private ConcurrentMap<Integer, ViewState> mViewState = new ConcurrentHashMap<>();
+  private Map<Integer, ViewState> mViewState = new HashMap<>();
 
   public RecyclerViewAdapter(RecyclerView.Adapter baseAdapter, int headerCount, int footerCount) {
     super(baseAdapter, headerCount, footerCount);
@@ -71,8 +69,8 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements Endless
       index = getHeaderViewIndex(position);
     }
     if (itemViewType != null) {
-      for (Map.Entry<Integer, ViewState> entry : mViewState.entrySet()) {
-        if (entry.getValue().isMatch(itemViewType, index) && entry.getValue().getVisibility() == View.GONE) {
+      for (ViewState viewState : mViewState.values()) {
+        if (viewState.isMatch(itemViewType, index) && viewState.getVisibility() == View.GONE) {
           return ItemViewType.BLANK.getValue() * getChunkSize();
         }
       }
@@ -104,16 +102,16 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements Endless
   @Override
   public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
     super.onBindViewHolder(holder, position);
-    if (mEndlessEnabled.get() && !mAppendingData.get() && mOnEndlessListener != null
+    if (mEndlessEnabled && !mAppendingData && mOnEndlessListener != null
         && position >= getItemCount() - 1 - getEndlessThreshold()) {
-      mAppendingData.set(true);
+      mAppendingData = true;
       onReachThreshold();
     }
   }
 
   @Override
   public void onNext() {
-    mAppendingData.set(false);
+    mAppendingData = false;
   }
 
   @Override
@@ -123,7 +121,7 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements Endless
 
   @Override
   public void setEndlessEnabled(boolean enabled) {
-    mEndlessEnabled.set(enabled);
+    mEndlessEnabled = enabled;
   }
 
   @Override
