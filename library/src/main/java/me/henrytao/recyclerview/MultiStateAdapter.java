@@ -16,12 +16,6 @@
 
 package me.henrytao.recyclerview;
 
-import android.support.annotation.IntDef;
-import android.view.View;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
 import me.henrytao.recyclerview.BaseAdapter.ItemViewType;
 
 /**
@@ -35,17 +29,11 @@ public interface MultiStateAdapter {
 
   boolean isViewStateShowed(int tag);
 
-  void onViewStateVisibilityChange(int tag, ItemViewType itemViewType, int index, @Visibility int visibility, int position);
+  void onViewStateVisibilityChange(int tag, ItemViewType itemViewType, int index, @Constants.Visibility int visibility, int position);
 
-  void setViewState(int tag, ItemViewType itemViewType, int index, @Visibility int initVisibility);
+  void setViewState(int tag, ItemViewType itemViewType, int index, @Constants.Visibility int initVisibility);
 
-  void setViewStateVisibility(int tag, @Visibility int visibility);
+  void setViewStateVisibility(int tag, @Constants.Visibility int visibility);
 
   void showViewState(int tag);
-
-  @IntDef({View.VISIBLE, View.GONE})
-  @Retention(RetentionPolicy.SOURCE)
-  @interface Visibility {
-
-  }
 }

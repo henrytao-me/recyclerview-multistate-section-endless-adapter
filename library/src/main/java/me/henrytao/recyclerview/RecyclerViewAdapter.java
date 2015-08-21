@@ -115,7 +115,8 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements Endless
   }
 
   @Override
-  public void onViewStateVisibilityChange(int tag, ItemViewType itemViewType, int index, @Visibility int visibility, int position) {
+  public void onViewStateVisibilityChange(int tag, ItemViewType itemViewType, int index, @Constants.Visibility int visibility,
+      int position) {
     notifyItemChanged(position);
   }
 
@@ -130,7 +131,7 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements Endless
   }
 
   @Override
-  public void setViewState(int tag, ItemViewType itemViewType, int index, @Visibility int initVisibility) {
+  public void setViewState(int tag, ItemViewType itemViewType, int index, @Constants.Visibility int initVisibility) {
     if ((itemViewType == ItemViewType.HEADER && index < getHeaderCount()) ||
         (itemViewType == ItemViewType.FOOTER && index < getFooterCount())) {
       mViewState.put(tag, new ViewState(itemViewType, index, initVisibility));
@@ -138,7 +139,7 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements Endless
   }
 
   @Override
-  public void setViewStateVisibility(int tag, @Visibility int visibility) {
+  public void setViewStateVisibility(int tag, @Constants.Visibility int visibility) {
     if (mViewState.containsKey(tag)) {
       ViewState viewState = mViewState.get(tag);
       if ((viewState.getVisibility() == View.GONE && visibility == View.GONE) ||
