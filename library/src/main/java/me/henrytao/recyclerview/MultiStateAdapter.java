@@ -29,11 +29,11 @@ public interface MultiStateAdapter {
 
   boolean isViewStateShowed(int tag);
 
-  void onViewStateVisibilityChange(int tag, ItemViewType itemViewType, int index, @Constants.Visibility int visibility, int position);
+  void onViewStateVisibilityChange(int tag, ItemViewType itemViewType, int index, @Visibility int visibility, int position);
 
-  void setViewState(int tag, ItemViewType itemViewType, int index, @Constants.Visibility int initVisibility);
+  void setViewState(int tag, ItemViewType itemViewType, int index, @Visibility int initVisibility);
 
-  void setViewStateVisibility(int tag, @Constants.Visibility int visibility);
+  void setViewStateVisibility(int tag, @Visibility int visibility);
 
   void showViewState(int tag);
 }
