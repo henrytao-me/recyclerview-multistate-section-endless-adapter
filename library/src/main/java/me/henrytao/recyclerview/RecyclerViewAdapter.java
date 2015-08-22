@@ -119,7 +119,8 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements Endless
   }
 
   @Override
-  public void onViewStateVisibilityChange(int tag, ItemViewType itemViewType, int index, @Visibility int visibility, int position) {
+  public void onViewStateVisibilityChange(int tag, ItemViewType itemViewType, int index, @Visibility int visibility,
+      int position) {
     notifyItemChanged(position);
   }
 
