@@ -36,64 +36,29 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
 
   private static final int CHUNK_SIZE = 1000;
 
-  private final RecyclerView.Adapter mBaseAdapter;
-
   private final int mFooterCount;
 
   private final int mHeaderCount;
+
+  private RecyclerView.AdapterDataObserver mAdapterDataObserver;
+
+  private RecyclerView.Adapter mBaseAdapter;
 
   private boolean mIsBaseAdapterEnabled;
 
   public BaseAdapter(RecyclerView.Adapter baseAdapter, int headerCount, int footerCount) {
     mIsBaseAdapterEnabled = true;
-    mBaseAdapter = baseAdapter;
     mHeaderCount = headerCount;
     mFooterCount = footerCount;
-    mBaseAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-      @Override
-      public void onChanged() {
-        super.onChanged();
-        if (mIsBaseAdapterEnabled) {
-          notifyDataSetChanged();
-        }
-      }
-
-      @Override
-      public void onItemRangeChanged(int positionStart, int itemCount) {
-        super.onItemRangeChanged(positionStart, itemCount);
-        if (mIsBaseAdapterEnabled) {
-          notifyItemRangeChanged(getPosition(positionStart), itemCount);
-        }
-      }
-
-      @Override
-      public void onItemRangeInserted(int positionStart, int itemCount) {
-        super.onItemRangeInserted(positionStart, itemCount);
-        if (mIsBaseAdapterEnabled) {
-          notifyItemRangeInserted(getPosition(positionStart), itemCount);
-        }
-      }
-
-      @Override
-      public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
-        super.onItemRangeMoved(fromPosition, toPosition, itemCount);
-        if (mIsBaseAdapterEnabled) {
-          notifyItemMoved(getPosition(fromPosition), getPosition(toPosition));
-        }
-      }
-
-      @Override
-      public void onItemRangeRemoved(int positionStart, int itemCount) {
-        super.onItemRangeRemoved(positionStart, itemCount);
-        if (mIsBaseAdapterEnabled) {
-          notifyItemRangeRemoved(getPosition(positionStart), itemCount);
-        }
-      }
-    });
+    setBaseAdapter(baseAdapter);
   }
 
   public BaseAdapter(RecyclerView.Adapter baseAdapter) {
     this(baseAdapter, 0, 0);
+  }
+
+  public BaseAdapter() {
+    this(null);
   }
 
   @Override
@@ -119,7 +84,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
       onBindFooterViewHolder(holder, getFooterViewIndex(position));
     } else if (isHeaderView(position)) {
       onBindHeaderViewHolder(holder, getHeaderViewIndex(position));
-    } else if (isItemView(position)) {
+    } else if (isItemView(position) && mBaseAdapter != null) {
       mBaseAdapter.onBindViewHolder(holder, getDataPosition(position));
     }
   }
@@ -147,13 +112,16 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
         viewHolder = onCreateHeaderViewHolder(layoutInflater, parent, index);
         break;
       case ITEM:
-        return mBaseAdapter.onCreateViewHolder(parent, 0);
+        if (mBaseAdapter != null) {
+          return mBaseAdapter.onCreateViewHolder(parent, 0);
+        }
+        break;
     }
     return viewHolder == null ? onCreateBlankViewHolder(layoutInflater, parent) : viewHolder;
   }
 
   public int getBaseItemCount() {
-    if (!mIsBaseAdapterEnabled) {
+    if (mBaseAdapter == null || !mIsBaseAdapterEnabled) {
       return 0;
     }
     return mBaseAdapter.getItemCount();
@@ -188,6 +156,58 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
 
   public RecyclerView.ViewHolder onCreateBlankViewHolder(LayoutInflater inflater, ViewGroup parent) {
     return new BlankHolder(new View(parent.getContext()));
+  }
+
+  public void setBaseAdapter(RecyclerView.Adapter baseAdapter) {
+    if (mBaseAdapter != null && mAdapterDataObserver != null) {
+      mBaseAdapter.unregisterAdapterDataObserver(mAdapterDataObserver);
+    }
+    mBaseAdapter = baseAdapter;
+    mAdapterDataObserver = null;
+    if (mBaseAdapter != null) {
+      mAdapterDataObserver = new RecyclerView.AdapterDataObserver() {
+        @Override
+        public void onChanged() {
+          super.onChanged();
+          if (mIsBaseAdapterEnabled) {
+            notifyDataSetChanged();
+          }
+        }
+
+        @Override
+        public void onItemRangeChanged(int positionStart, int itemCount) {
+          super.onItemRangeChanged(positionStart, itemCount);
+          if (mIsBaseAdapterEnabled) {
+            notifyItemRangeChanged(getPosition(positionStart), itemCount);
+          }
+        }
+
+        @Override
+        public void onItemRangeInserted(int positionStart, int itemCount) {
+          super.onItemRangeInserted(positionStart, itemCount);
+          if (mIsBaseAdapterEnabled) {
+            notifyItemRangeInserted(getPosition(positionStart), itemCount);
+          }
+        }
+
+        @Override
+        public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
+          super.onItemRangeMoved(fromPosition, toPosition, itemCount);
+          if (mIsBaseAdapterEnabled) {
+            notifyItemMoved(getPosition(fromPosition), getPosition(toPosition));
+          }
+        }
+
+        @Override
+        public void onItemRangeRemoved(int positionStart, int itemCount) {
+          super.onItemRangeRemoved(positionStart, itemCount);
+          if (mIsBaseAdapterEnabled) {
+            notifyItemRangeRemoved(getPosition(positionStart), itemCount);
+          }
+        }
+      };
+      mBaseAdapter.registerAdapterDataObserver(mAdapterDataObserver);
+    }
   }
 
   protected int getChunkSize() {
