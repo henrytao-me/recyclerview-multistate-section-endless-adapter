@@ -47,6 +47,10 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements Endless
     super(baseAdapter);
   }
 
+  public RecyclerViewAdapter() {
+    super();
+  }
+
   @Override
   public int getEndlessThreshold() {
     return mEndlessThreshold;

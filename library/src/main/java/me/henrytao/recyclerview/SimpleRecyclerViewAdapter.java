@@ -33,6 +33,10 @@ public abstract class SimpleRecyclerViewAdapter extends RecyclerViewAdapter {
     super(baseAdapter, 1, 1);
   }
 
+  public SimpleRecyclerViewAdapter() {
+    this(null);
+  }
+
   @Override
   public void onBindFooterViewHolder(RecyclerView.ViewHolder holder, int index) {
 
