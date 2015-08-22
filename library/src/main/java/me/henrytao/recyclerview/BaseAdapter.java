@@ -50,7 +50,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
     mIsBaseAdapterEnabled = true;
     mHeaderCount = headerCount;
     mFooterCount = footerCount;
-    setBaseAdapter(baseAdapter);
+    setBaseAdapter(baseAdapter, false);
   }
 
   public BaseAdapter(RecyclerView.Adapter baseAdapter) {
@@ -159,55 +159,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
   }
 
   public void setBaseAdapter(RecyclerView.Adapter baseAdapter) {
-    if (mBaseAdapter != null && mAdapterDataObserver != null) {
-      mBaseAdapter.unregisterAdapterDataObserver(mAdapterDataObserver);
-    }
-    mBaseAdapter = baseAdapter;
-    mAdapterDataObserver = null;
-    if (mBaseAdapter != null) {
-      mAdapterDataObserver = new RecyclerView.AdapterDataObserver() {
-        @Override
-        public void onChanged() {
-          super.onChanged();
-          if (mIsBaseAdapterEnabled) {
-            notifyDataSetChanged();
-          }
-        }
-
-        @Override
-        public void onItemRangeChanged(int positionStart, int itemCount) {
-          super.onItemRangeChanged(positionStart, itemCount);
-          if (mIsBaseAdapterEnabled) {
-            notifyItemRangeChanged(getPosition(positionStart), itemCount);
-          }
-        }
-
-        @Override
-        public void onItemRangeInserted(int positionStart, int itemCount) {
-          super.onItemRangeInserted(positionStart, itemCount);
-          if (mIsBaseAdapterEnabled) {
-            notifyItemRangeInserted(getPosition(positionStart), itemCount);
-          }
-        }
-
-        @Override
-        public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
-          super.onItemRangeMoved(fromPosition, toPosition, itemCount);
-          if (mIsBaseAdapterEnabled) {
-            notifyItemMoved(getPosition(fromPosition), getPosition(toPosition));
-          }
-        }
-
-        @Override
-        public void onItemRangeRemoved(int positionStart, int itemCount) {
-          super.onItemRangeRemoved(positionStart, itemCount);
-          if (mIsBaseAdapterEnabled) {
-            notifyItemRangeRemoved(getPosition(positionStart), itemCount);
-          }
-        }
-      };
-      mBaseAdapter.registerAdapterDataObserver(mAdapterDataObserver);
-    }
+    setBaseAdapter(baseAdapter, true);
   }
 
   protected int getChunkSize() {
@@ -267,6 +219,61 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
 
   protected boolean isItemView(int position) {
     return !isHeaderView(position) && !isFooterView(position) && !isBlankView(position);
+  }
+
+  protected void setBaseAdapter(RecyclerView.Adapter baseAdapter, boolean notifyDataSetChanged) {
+    if (mBaseAdapter != null && mAdapterDataObserver != null) {
+      mBaseAdapter.unregisterAdapterDataObserver(mAdapterDataObserver);
+    }
+    mBaseAdapter = baseAdapter;
+    mAdapterDataObserver = null;
+    if (mBaseAdapter != null) {
+      mAdapterDataObserver = new RecyclerView.AdapterDataObserver() {
+        @Override
+        public void onChanged() {
+          super.onChanged();
+          if (mIsBaseAdapterEnabled) {
+            notifyDataSetChanged();
+          }
+        }
+
+        @Override
+        public void onItemRangeChanged(int positionStart, int itemCount) {
+          super.onItemRangeChanged(positionStart, itemCount);
+          if (mIsBaseAdapterEnabled) {
+            notifyItemRangeChanged(getPosition(positionStart), itemCount);
+          }
+        }
+
+        @Override
+        public void onItemRangeInserted(int positionStart, int itemCount) {
+          super.onItemRangeInserted(positionStart, itemCount);
+          if (mIsBaseAdapterEnabled) {
+            notifyItemRangeInserted(getPosition(positionStart), itemCount);
+          }
+        }
+
+        @Override
+        public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
+          super.onItemRangeMoved(fromPosition, toPosition, itemCount);
+          if (mIsBaseAdapterEnabled) {
+            notifyItemMoved(getPosition(fromPosition), getPosition(toPosition));
+          }
+        }
+
+        @Override
+        public void onItemRangeRemoved(int positionStart, int itemCount) {
+          super.onItemRangeRemoved(positionStart, itemCount);
+          if (mIsBaseAdapterEnabled) {
+            notifyItemRangeRemoved(getPosition(positionStart), itemCount);
+          }
+        }
+      };
+      mBaseAdapter.registerAdapterDataObserver(mAdapterDataObserver);
+    }
+    if (notifyDataSetChanged) {
+      notifyDataSetChanged();
+    }
   }
 
   public enum ItemViewType {
