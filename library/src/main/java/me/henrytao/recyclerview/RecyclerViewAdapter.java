@@ -168,6 +168,10 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements Endless
     setViewStateVisibility(tag, View.VISIBLE);
   }
 
+  public boolean isAppendingData() {
+    return mAppendingData;
+  }
+
   protected void onReachThreshold() {
     new OnReachThresholdTask(mOnEndlessListener).execute();
   }
