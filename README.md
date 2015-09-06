@@ -13,7 +13,7 @@ I am working section support. I will be deployed soon. If you find that it still
 
 ## Demo
 
-[![Get it on Google Play](https://developer.android.com/images/brand/en_generic_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=me.henrytao.mdcore)
+[![Get it on Google Play](https://developer.android.com/images/brand/en_generic_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=me.henrytao.recyclerview)
 
 Please note that the app on the Play store is not always the latest version. 
 
