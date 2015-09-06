@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<!--
   ~ Copyright 2015 "Henry Tao <hi@henrytao.me>"
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,13 +14,15 @@
   ~ limitations under the License.
   -->
 
-<resources>
-  <!-- Default screen margins, per the Android Design guidelines. -->
-  <dimen name="activity_horizontal_margin">16dp</dimen>
-  <dimen name="activity_vertical_margin">16dp</dimen>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  tools:context="me.henrytao.sample.fragment.SimpleRecyclerViewFragment">
 
-  <dimen name="mdLayout_spacing_md">16dp</dimen>
-  <dimen name="mdLayout_spacing_sm">8dp</dimen>
-  <dimen name="mdIcon_xlg">72dp</dimen>
-  <dimen name="mdLayout_spacing_xlg">32dp</dimen>
-</resources>
+  <android.support.v7.widget.RecyclerView
+    android:id="@android:id/list"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbars="vertical" />
+</FrameLayout>

@@ -14,31 +14,28 @@
  * limitations under the License.
  */
 
-package me.henrytao.sample.adapter;
+package me.henrytao.sample.fragment;
 
-import android.support.v7.widget.RecyclerView;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import me.henrytao.me.sample.R;
-import me.henrytao.recyclerview.SimpleRecyclerViewAdapter;
 
-/**
- * Created by henrytao on 8/16/15.
- */
-public class HeaderAdapter extends SimpleRecyclerViewAdapter {
+public class InfoFragment extends Fragment {
 
-  public HeaderAdapter(RecyclerView.Adapter baseAdapter) {
-    super(baseAdapter);
+  public static InfoFragment newInstance() {
+    return new InfoFragment();
+  }
+
+  public InfoFragment() {
+
   }
 
   @Override
-  public RecyclerView.ViewHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent) {
-    return null;
-  }
-
-  @Override
-  public RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent) {
-    return new HeaderHolder(inflater, parent, R.layout.holder_header);
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    return inflater.inflate(R.layout.fragment_info, container, false);
   }
 }

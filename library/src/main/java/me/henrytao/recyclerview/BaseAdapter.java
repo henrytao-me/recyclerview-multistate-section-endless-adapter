@@ -16,6 +16,7 @@
 
 package me.henrytao.recyclerview;
 
+import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -154,6 +155,22 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
     }
   }
 
+  public boolean isBlankView(int position) {
+    return position < getItemCount() ? false : true;
+  }
+
+  public boolean isFooterView(int position) {
+    return getFooterViewIndex(position) >= 0;
+  }
+
+  public boolean isHeaderView(int position) {
+    return getHeaderViewIndex(position) >= 0;
+  }
+
+  public boolean isItemView(int position) {
+    return !isHeaderView(position) && !isFooterView(position) && !isBlankView(position);
+  }
+
   public RecyclerView.ViewHolder onCreateBlankViewHolder(LayoutInflater inflater, ViewGroup parent) {
     return new BlankHolder(new View(parent.getContext()));
   }
@@ -203,22 +220,6 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
       return -1;
     }
     return index;
-  }
-
-  protected boolean isBlankView(int position) {
-    return position < getItemCount() ? false : true;
-  }
-
-  protected boolean isFooterView(int position) {
-    return getFooterViewIndex(position) >= 0;
-  }
-
-  protected boolean isHeaderView(int position) {
-    return getHeaderViewIndex(position) >= 0;
-  }
-
-  protected boolean isItemView(int position) {
-    return !isHeaderView(position) && !isFooterView(position) && !isBlankView(position);
   }
 
   protected void setBaseAdapter(RecyclerView.Adapter baseAdapter, boolean notifyDataSetChanged) {
@@ -292,15 +293,27 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
 
   public static class BaseHolder extends RecyclerView.ViewHolder {
 
-    protected View mItemView;
+    protected static View inflate(LayoutInflater inflater, ViewGroup parent, @LayoutRes int layoutId) {
+      return inflater.inflate(layoutId, parent, false);
+    }
 
     public BaseHolder(View itemView) {
       super(itemView);
-      mItemView = itemView;
+    }
+
+    public BaseHolder(LayoutInflater inflater, ViewGroup parent, @LayoutRes int layoutId) {
+      this(inflater, parent, layoutId, false);
+    }
+
+    public BaseHolder(LayoutInflater inflater, ViewGroup parent, @LayoutRes int layoutId, boolean isFillParent) {
+      super(inflate(inflater, parent, layoutId));
+      if (isFillParent && parent != null) {
+        getItemView().getLayoutParams().height = parent.getMeasuredHeight();
+      }
     }
 
     public View getItemView() {
-      return mItemView;
+      return itemView;
     }
 
     public void setOnClickListener(View.OnClickListener listener) {
@@ -313,6 +326,14 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
     public BlankHolder(View itemView) {
       super(itemView);
     }
+
+    public BlankHolder(LayoutInflater inflater, ViewGroup parent, @LayoutRes int layoutId) {
+      super(inflater, parent, layoutId);
+    }
+
+    public BlankHolder(LayoutInflater inflater, ViewGroup parent, @LayoutRes int layoutId, boolean isFillParent) {
+      super(inflater, parent, layoutId, isFillParent);
+    }
   }
 
   public static class FooterHolder extends BaseHolder {
@@ -320,12 +341,28 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
     public FooterHolder(View itemView) {
       super(itemView);
     }
+
+    public FooterHolder(LayoutInflater inflater, ViewGroup parent, @LayoutRes int layoutId) {
+      super(inflater, parent, layoutId);
+    }
+
+    public FooterHolder(LayoutInflater inflater, ViewGroup parent, @LayoutRes int layoutId, boolean isFillParent) {
+      super(inflater, parent, layoutId, isFillParent);
+    }
   }
 
   public static class HeaderHolder extends BaseHolder {
 
     public HeaderHolder(View itemView) {
       super(itemView);
+    }
+
+    public HeaderHolder(LayoutInflater inflater, ViewGroup parent, @LayoutRes int layoutId) {
+      super(inflater, parent, layoutId);
+    }
+
+    public HeaderHolder(LayoutInflater inflater, ViewGroup parent, @LayoutRes int layoutId, boolean isFillParent) {
+      super(inflater, parent, layoutId, isFillParent);
     }
   }
 }

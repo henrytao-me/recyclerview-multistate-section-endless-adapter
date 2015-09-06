@@ -19,9 +19,10 @@ package me.henrytao.sample.adapter;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
-import me.henrytao.recyclerview.RecyclerViewAdapter;
 import me.henrytao.me.sample.R;
+import me.henrytao.recyclerview.RecyclerViewAdapter;
 
 /**
  * Created by henrytao on 8/16/15.
@@ -49,12 +50,16 @@ public class MultipleHeaderAdapter extends RecyclerViewAdapter {
 
   @Override
   public RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent, int index) {
+    HeaderHolder holder = null;
     switch (index) {
       case 0:
-        return new HeaderHolder(inflater.inflate(R.layout.holder_header, parent, false));
+        holder = new HeaderHolder(inflater, parent, R.layout.holder_header);
+        break;
       case 1:
-        return new HeaderHolder(inflater.inflate(R.layout.holder_header_2, parent, false));
+        holder = new HeaderHolder(inflater, parent, R.layout.holder_header);
+        ((TextView) holder.getItemView().findViewById(R.id.title)).setText("This is another header");
+        break;
     }
-    return null;
+    return holder;
   }
 }
