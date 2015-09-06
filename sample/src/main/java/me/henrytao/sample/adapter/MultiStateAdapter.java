@@ -21,8 +21,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import me.henrytao.recyclerview.RecyclerViewAdapter;
 import me.henrytao.me.sample.R;
+import me.henrytao.recyclerview.RecyclerViewAdapter;
 
 /**
  * Created by henrytao on 8/16/15.

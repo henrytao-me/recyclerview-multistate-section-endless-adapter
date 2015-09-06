@@ -21,25 +21,19 @@ ext {
   ]
 
   android = [
-      compileSdkVersion: 22,
-      buildToolsVersion: "22.0.1",
+      compileSdkVersion: 23,
+      buildToolsVersion: "23.0.1",
       applicationId    : "me.henrytao.me.recyclerview",
       minSdkVersion    : 8,
-      targetSdkVersion : 22,
-      versionCode      : 1,
-      versionName      : "1.1.0"
+      targetSdkVersion : 23,
+      versionCode      : 2,
+      versionName      : "1.2.0"
   ]
 
   dependencies = [
-      "com.android.support:appcompat-v7"                : "com.android.support:appcompat-v7:22.2.1",
-      "com.android.support:recyclerview-v7"             : "com.android.support:recyclerview-v7:22.1.1",
+      "com.android.support:appcompat-v7"   : "com.android.support:appcompat-v7:23.0.1",
+      "com.android.support:recyclerview-v7": "com.android.support:recyclerview-v7:23.0.1",
 
-      "com.jakewharton:butterknife"                     : "com.jakewharton:butterknife:7.0.1",
-
-      "junit:junit"                                     : "junit:junit:4.12",
-      "org.hamcrest:hamcrest-core"                      : "org.hamcrest:hamcrest-core:1.1",
-      "org.hamcrest:hamcrest-library"                   : "org.hamcrest:hamcrest-library:1.1",
-      "org.hamcrest:hamcrest-integration"               : "org.hamcrest:hamcrest-integration:1.1",
-      "org.robolectric:robolectric"                     : "org.robolectric:robolectric:3.0"
+      "com.jakewharton:butterknife"        : "com.jakewharton:butterknife:7.0.1"
   ]
 }

@@ -39,8 +39,11 @@ android {
 dependencies {
   compile fileTree(dir: "libs", include: ["*.jar"])
   compile rootProject.ext.dependencies["com.android.support:appcompat-v7"]
+  compile rootProject.ext.dependencies["com.android.support:recyclerview-v7"]
 
   compile rootProject.ext.dependencies["com.jakewharton:butterknife"]
 
-  compile(project(":library"))
+  compile(project(":library")) {
+    exclude group: "com.android.support"
+  }
 }
