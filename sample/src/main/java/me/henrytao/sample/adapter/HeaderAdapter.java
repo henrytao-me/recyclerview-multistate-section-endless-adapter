@@ -39,6 +39,6 @@ public class HeaderAdapter extends SimpleRecyclerViewAdapter {
 
   @Override
   public RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent) {
-    return new HeaderHolder(inflater.inflate(R.layout.holder_header, parent, false));
+    return new HeaderHolder(inflater, parent, R.layout.holder_header);
   }
 }

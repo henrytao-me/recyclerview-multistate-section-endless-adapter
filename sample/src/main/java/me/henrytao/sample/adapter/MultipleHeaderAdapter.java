@@ -58,9 +58,9 @@ public class MultipleHeaderAdapter extends RecyclerViewAdapter {
   public RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent, int index) {
     switch (index) {
       case 0:
-        return new HeaderHolder(inflater.inflate(R.layout.holder_header, parent, false));
+        return new HeaderHolder(inflater, parent, R.layout.holder_header);
       case 1:
-        return new HeaderHolder(inflater.inflate(R.layout.holder_header, parent, false));
+        return new HeaderHolder(inflater, parent, R.layout.holder_header);
     }
     return null;
   }

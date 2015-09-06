@@ -56,7 +56,7 @@ public class MultiStateAdapter extends RecyclerViewAdapter {
     HeaderHolder holder = null;
     switch (index) {
       case 0:
-        holder = new HeaderHolder(inflater.inflate(R.layout.holder_header, parent, false));
+        holder = new HeaderHolder(inflater, parent, R.layout.holder_header, true);
         holder.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View v) {
@@ -69,7 +69,7 @@ public class MultiStateAdapter extends RecyclerViewAdapter {
         });
         break;
       case 1:
-        holder = new HeaderHolder(inflater.inflate(R.layout.holder_loading, parent, false));
+        holder = new HeaderHolder(inflater, parent, R.layout.holder_loading);
         break;
     }
     return holder;

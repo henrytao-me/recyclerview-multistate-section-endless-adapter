@@ -29,6 +29,7 @@ import me.henrytao.sample.fragment.EndlessRecyclerViewFragment;
 import me.henrytao.sample.fragment.HeaderFooterRecyclerViewFragment;
 import me.henrytao.sample.fragment.HeaderRecyclerViewFragment;
 import me.henrytao.sample.fragment.MaterialRecyclerViewFragment;
+import me.henrytao.sample.fragment.MultiStateRecyclerViewFragment;
 import me.henrytao.sample.fragment.MultipleHeaderRecyclerViewFragment;
 import me.henrytao.sample.fragment.SimpleRecyclerViewFragment;
 
@@ -80,10 +81,10 @@ public class MainActivity extends AppCompatActivity {
         setTitle(R.string.text_multiple_header_recyclerview);
         fragment = MultipleHeaderRecyclerViewFragment.newInstance();
         break;
-      //case R.id.action_multi_state_recyclerview:
-      //  setTitle(R.string.text_multi_state_recyclerview);
-      //  vRecyclerView.setAdapter(mMultiStateAdapter);
-      //  return true;
+      case R.id.action_multi_state_recyclerview:
+        setTitle(R.string.text_multi_state_recyclerview);
+        fragment = MultiStateRecyclerViewFragment.newInstance();
+        break;
       case R.id.action_endless_recyclerview:
         setTitle(R.string.text_endless_recyclerview);
         fragment = EndlessRecyclerViewFragment.newInstance();

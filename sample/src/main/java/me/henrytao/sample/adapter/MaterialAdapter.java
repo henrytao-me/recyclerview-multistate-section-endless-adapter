@@ -34,11 +34,11 @@ public class MaterialAdapter extends SimpleRecyclerViewAdapter {
 
   @Override
   public RecyclerView.ViewHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent) {
-    return new FooterHolder(inflater.inflate(R.layout.item_spacing, parent, false));
+    return new FooterHolder(inflater, parent, R.layout.item_spacing);
   }
 
   @Override
   public RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent) {
-    return new HeaderHolder(inflater.inflate(R.layout.item_spacing, parent, false));
+    return new HeaderHolder(inflater, parent, R.layout.item_spacing);
   }
 }

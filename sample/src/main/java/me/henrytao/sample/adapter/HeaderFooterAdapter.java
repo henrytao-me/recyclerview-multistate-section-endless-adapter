@@ -18,11 +18,11 @@ public class HeaderFooterAdapter extends SimpleRecyclerViewAdapter {
 
   @Override
   public RecyclerView.ViewHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent) {
-    return new FooterHolder(inflater.inflate(R.layout.holder_footer, parent, false));
+    return new FooterHolder(inflater, parent, R.layout.holder_footer);
   }
 
   @Override
   public RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent) {
-    return new HeaderHolder(inflater.inflate(R.layout.holder_header, parent, false));
+    return new HeaderHolder(inflater, parent, R.layout.holder_header);
   }
 }
