@@ -36,4 +36,22 @@
     <item name="android:background">#999999</item>
   </style>
 
+  <style name="MdText.Headline" parent="">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:gravity">center</item>
+    <item name="android:textSize">24sp</item>
+  </style>
+
+  <style name="MdText.Body1" parent="">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:textSize">14sp</item>
+  </style>
+
+  <style name="MdDivider" parent="Divider">
+    <item name="android:layout_marginTop">@dimen/mdLayout_spacing_md</item>
+    <item name="android:layout_marginBottom">@dimen/mdLayout_spacing_md</item>
+  </style>
+
 </resources>

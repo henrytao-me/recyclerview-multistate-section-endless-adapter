@@ -29,6 +29,7 @@ import me.henrytao.sample.fragment.EndlessRecyclerViewFragment;
 import me.henrytao.sample.fragment.HeaderFooterRecyclerViewFragment;
 import me.henrytao.sample.fragment.HeaderGridRecyclerViewFragment;
 import me.henrytao.sample.fragment.HeaderRecyclerViewFragment;
+import me.henrytao.sample.fragment.InfoFragment;
 import me.henrytao.sample.fragment.MaterialRecyclerViewFragment;
 import me.henrytao.sample.fragment.MultiStateRecyclerViewFragment;
 import me.henrytao.sample.fragment.MultipleHeaderRecyclerViewFragment;
@@ -62,6 +63,10 @@ public class MainActivity extends AppCompatActivity {
   protected boolean onOptionsItemSelected(@IdRes int id) {
     Fragment fragment = null;
     switch (id) {
+      case R.id.action_info:
+        setTitle(getString(R.string.text_info));
+        fragment = InfoFragment.newInstance();
+        break;
       case R.id.action_simple_recyclerview:
         setTitle(R.string.text_simple_recyclerview);
         fragment = SimpleRecyclerViewFragment.newInstance();
