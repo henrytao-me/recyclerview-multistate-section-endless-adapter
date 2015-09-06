@@ -136,6 +136,16 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements Endless
   }
 
   @Override
+  public void setFooterViewState(int tag, int index, @Visibility int initVisibility) {
+    setViewState(tag, ItemViewType.FOOTER, index, initVisibility);
+  }
+
+  @Override
+  public void setHeaderViewState(int tag, int index, @Visibility int initVisibility) {
+    setViewState(tag, ItemViewType.HEADER, index, initVisibility);
+  }
+
+  @Override
   public void setOnEndlessListener(OnEndlessListener listener) {
     mOnEndlessListener = listener;
   }

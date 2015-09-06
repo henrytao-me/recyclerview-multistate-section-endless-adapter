@@ -18,11 +18,22 @@
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:orientation="vertical"
+  android:background="@drawable/md_ripple"
   android:padding="16dp">
 
   <ProgressBar
+    android:id="@+id/progressBar"
     android:layout_width="56dp"
     android:layout_height="56dp"
     android:layout_centerHorizontal="true"
     android:layout_centerVertical="true" />
+
+  <TextView
+    android:id="@+id/title"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/progressBar"
+    android:layout_centerHorizontal="true"
+    android:layout_centerVertical="true"
+    android:layout_marginTop="16dp" />
 </RelativeLayout>

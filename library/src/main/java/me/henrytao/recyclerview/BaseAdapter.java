@@ -155,6 +155,22 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
     }
   }
 
+  public boolean isBlankView(int position) {
+    return position < getItemCount() ? false : true;
+  }
+
+  public boolean isFooterView(int position) {
+    return getFooterViewIndex(position) >= 0;
+  }
+
+  public boolean isHeaderView(int position) {
+    return getHeaderViewIndex(position) >= 0;
+  }
+
+  public boolean isItemView(int position) {
+    return !isHeaderView(position) && !isFooterView(position) && !isBlankView(position);
+  }
+
   public RecyclerView.ViewHolder onCreateBlankViewHolder(LayoutInflater inflater, ViewGroup parent) {
     return new BlankHolder(new View(parent.getContext()));
   }
@@ -204,22 +220,6 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
       return -1;
     }
     return index;
-  }
-
-  protected boolean isBlankView(int position) {
-    return position < getItemCount() ? false : true;
-  }
-
-  protected boolean isFooterView(int position) {
-    return getFooterViewIndex(position) >= 0;
-  }
-
-  protected boolean isHeaderView(int position) {
-    return getHeaderViewIndex(position) >= 0;
-  }
-
-  protected boolean isItemView(int position) {
-    return !isHeaderView(position) && !isFooterView(position) && !isBlankView(position);
   }
 
   protected void setBaseAdapter(RecyclerView.Adapter baseAdapter, boolean notifyDataSetChanged) {

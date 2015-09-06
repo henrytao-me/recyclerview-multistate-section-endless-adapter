@@ -40,13 +40,7 @@ public class MultipleHeaderAdapter extends RecyclerViewAdapter {
 
   @Override
   public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder, int index) {
-    switch (index) {
-      case 1:
-        if (holder instanceof HeaderHolder) {
-          ((TextView) ((HeaderHolder) holder).getItemView().findViewById(R.id.title)).setText("This is another header");
-        }
-        break;
-    }
+
   }
 
   @Override
@@ -56,12 +50,16 @@ public class MultipleHeaderAdapter extends RecyclerViewAdapter {
 
   @Override
   public RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent, int index) {
+    HeaderHolder holder = null;
     switch (index) {
       case 0:
-        return new HeaderHolder(inflater, parent, R.layout.holder_header);
+        holder = new HeaderHolder(inflater, parent, R.layout.holder_header);
+        break;
       case 1:
-        return new HeaderHolder(inflater, parent, R.layout.holder_header);
+        holder = new HeaderHolder(inflater, parent, R.layout.holder_header);
+        ((TextView) holder.getItemView().findViewById(R.id.title)).setText("This is another header");
+        break;
     }
-    return null;
+    return holder;
   }
 }
