@@ -60,7 +60,35 @@ public class MaterialAdapter extends SimpleRecyclerViewAdapter {
   }
 ```
 
-#### 2. More? 
+
+#### 2. Endless adapter
+
+```
+  @Override
+  public void onViewCreated(View view, Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+    mSimpleAdapter = new SimpleAdapter();
+    mEndlessAdapter = new EndlessAdapter(mSimpleAdapter);
+    mEndlessAdapter.setEndlessThreshold(5);
+    mEndlessAdapter.setOnEndlessListener(new OnEndlessListener() {
+      @Override
+      public void onReachThreshold() {
+        // This method is called async. Please make sure it is still added to Activity if you use fragment.
+        if (isAdded()) {
+          mSimpleAdapter.addMoreItems(10);
+          // Remeber to call onNext. It will fetch next page.
+          mEndlessAdapter.onNext();
+        }
+      }
+    });
+    vRecyclerView.setHasFixedSize(false);
+    vRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+    vRecyclerView.setAdapter(mEndlessAdapter);
+  }
+```
+
+
+#### 3. More? 
 
 Please checkout sample section. I have a lot more example there.
 
