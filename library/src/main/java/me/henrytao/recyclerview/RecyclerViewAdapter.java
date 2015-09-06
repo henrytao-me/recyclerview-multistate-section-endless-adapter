@@ -56,6 +56,9 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements Endless
     return mEndlessThreshold;
   }
 
+  /**
+   * Fetching next page listener will be called if recyclerView is scrolled to threshold item (count from bottom)
+   */
   @Override
   public void setEndlessThreshold(int threshold) {
     mEndlessThreshold = threshold;
@@ -113,6 +116,9 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements Endless
     }
   }
 
+  /**
+   * This method will tell recyclerView to fetch next page
+   */
   @Override
   public void onNext() {
     mAppendingData = false;

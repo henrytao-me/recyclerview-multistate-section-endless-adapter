@@ -16,9 +16,17 @@
 
 <resources>
 
+  <color name="background">#F9F9F9</color>
+
   <!-- Base application theme. -->
-  <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-    <!-- Customize your theme here. -->
+  <style name="AppTheme" parent="Theme.AppCompat.Light">
+    <item name="colorPrimary">#00BCD4</item>
+    <item name="colorPrimaryDark">#00ACC1</item>
+    <item name="colorAccent">#E91E63</item>
+    <item name="colorControlNormal">#8A000000</item>
+    <item name="colorControlActivated">#00BCD4</item>
+    <item name="android:colorBackground">@color/background</item>
+    <item name="android:windowBackground">@color/background</item>
   </style>
 
   <style name="Divider">

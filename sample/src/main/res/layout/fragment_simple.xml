@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<!--
   ~ Copyright 2015 "Henry Tao <hi@henrytao.me>"
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,18 +14,15 @@
   ~ limitations under the License.
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
-  android:layout_height="160dp"
-  android:orientation="vertical"
-  android:background="#20000000">
+  android:layout_height="match_parent"
+  tools:context="me.henrytao.sample.fragment.SimpleRecyclerViewFragment">
 
-  <TextView
+  <android.support.v7.widget.RecyclerView
+    android:id="@android:id/list"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_centerVertical="true"
-    android:paddingLeft="16dp"
-    android:text="This is another header" />
-
-  <View style="@style/Divider" />
-</RelativeLayout>
+    android:layout_height="match_parent"
+    android:scrollbars="vertical" />
+</FrameLayout>

@@ -21,34 +21,24 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import me.henrytao.me.sample.R;
-import me.henrytao.recyclerview.RecyclerViewAdapter;
+import me.henrytao.recyclerview.SimpleRecyclerViewAdapter;
 
 /**
  * Created by henrytao on 8/16/15.
  */
-public class HeaderAdapter extends RecyclerViewAdapter {
+public class HeaderAdapter extends SimpleRecyclerViewAdapter {
 
   public HeaderAdapter(RecyclerView.Adapter baseAdapter) {
-    super(baseAdapter, 1, 0);
+    super(baseAdapter);
   }
 
   @Override
-  public void onBindFooterViewHolder(RecyclerView.ViewHolder holder, int index) {
-
-  }
-
-  @Override
-  public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder, int index) {
-
-  }
-
-  @Override
-  public RecyclerView.ViewHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent, int index) {
+  public RecyclerView.ViewHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent) {
     return null;
   }
 
   @Override
-  public RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent, int index) {
+  public RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent) {
     return new HeaderHolder(inflater.inflate(R.layout.holder_header, parent, false));
   }
 }

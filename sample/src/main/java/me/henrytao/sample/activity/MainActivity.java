@@ -17,48 +17,24 @@
 package me.henrytao.sample.activity;
 
 import android.os.Bundle;
-import android.os.Handler;
+import android.support.annotation.IdRes;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import me.henrytao.me.sample.R;
-import me.henrytao.sample.adapter.EndlessAdapter;
-import me.henrytao.sample.adapter.HeaderAdapter;
-import me.henrytao.sample.adapter.HeaderFooterAdapter;
-import me.henrytao.sample.adapter.MaterialAdapter;
-import me.henrytao.sample.adapter.MultiStateAdapter;
-import me.henrytao.sample.adapter.MultipleHeaderAdapter;
-import me.henrytao.sample.adapter.SimpleAdapter;
-
-import static me.henrytao.recyclerview.EndlessAdapter.OnEndlessListener;
+import me.henrytao.sample.fragment.EndlessRecyclerViewFragment;
+import me.henrytao.sample.fragment.HeaderFooterRecyclerViewFragment;
+import me.henrytao.sample.fragment.HeaderRecyclerViewFragment;
+import me.henrytao.sample.fragment.MaterialRecyclerViewFragment;
+import me.henrytao.sample.fragment.MultipleHeaderRecyclerViewFragment;
+import me.henrytao.sample.fragment.SimpleRecyclerViewFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-  @Bind(R.id.recycler_view)
-  RecyclerView vRecyclerView;
-
-  private EndlessAdapter mEndlessAdapter;
-
-  private Handler mHandler;
-
-  private HeaderAdapter mHeaderAdapter;
-
-  private HeaderFooterAdapter mHeaderFooterAdapter;
-
-  private MaterialAdapter mMaterialAdapter;
-
-  private MultiStateAdapter mMultiStateAdapter;
-
-  private MultipleHeaderAdapter mMultipleHeaderAdapter;
-
-  private SimpleAdapter mSimpleAdapter;
-
-  private SimpleAdapter mSimpleEndlessAdapter;
+  private Fragment mFragment;
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
@@ -68,35 +44,8 @@ public class MainActivity extends AppCompatActivity {
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
-    switch (item.getItemId()) {
-      case R.id.action_simple_recyclerview:
-        setTitle(R.string.text_simple_recyclerview);
-        vRecyclerView.setAdapter(mSimpleAdapter);
-        return true;
-      case R.id.action_material_recyclerview:
-        setTitle(R.string.text_material_recyclerview);
-        vRecyclerView.setAdapter(mMaterialAdapter);
-        return true;
-      case R.id.action_header_recyclerview:
-        setTitle(R.string.text_header_recyclerview);
-        vRecyclerView.setAdapter(mHeaderAdapter);
-        return true;
-      case R.id.action_header_footer_recyclerview:
-        setTitle(R.string.text_header_footer_recyclerview);
-        vRecyclerView.setAdapter(mHeaderFooterAdapter);
-        return true;
-      case R.id.action_multiple_header_recyclerview:
-        setTitle(R.string.text_multiple_header_recyclerview);
-        vRecyclerView.setAdapter(mMultipleHeaderAdapter);
-        return true;
-      case R.id.action_multi_state_recyclerview:
-        setTitle(R.string.text_multi_state_recyclerview);
-        vRecyclerView.setAdapter(mMultiStateAdapter);
-        return true;
-      case R.id.action_endless_recyclerview:
-        setTitle(R.string.text_endless_recyclerview);
-        vRecyclerView.setAdapter(mEndlessAdapter);
-        return true;
+    if (onOptionsItemSelected(item.getItemId())) {
+      return true;
     }
     return super.onOptionsItemSelected(item);
   }
@@ -105,30 +54,49 @@ public class MainActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-    ButterKnife.bind(this);
+    onOptionsItemSelected(R.id.action_simple_recyclerview);
+  }
 
-    mSimpleAdapter = new SimpleAdapter();
-    mMaterialAdapter = new MaterialAdapter(mSimpleAdapter);
-    mHeaderAdapter = new HeaderAdapter(mSimpleAdapter);
-    mHeaderFooterAdapter = new HeaderFooterAdapter(mSimpleAdapter);
-    mMultipleHeaderAdapter = new MultipleHeaderAdapter(mSimpleAdapter);
-    mMultiStateAdapter = new MultiStateAdapter(mSimpleAdapter);
-
-    mHandler = new Handler();
-    mSimpleEndlessAdapter = new SimpleAdapter();
-    mEndlessAdapter = new EndlessAdapter(mSimpleEndlessAdapter);
-    mEndlessAdapter.setOnEndlessListener(new OnEndlessListener() {
-      @Override
-      public void onReachThreshold() {
-        mSimpleEndlessAdapter.addMoreItems(10);
-        mEndlessAdapter.onNext();
+  protected boolean onOptionsItemSelected(@IdRes int id) {
+    Fragment fragment = null;
+    switch (id) {
+      case R.id.action_simple_recyclerview:
+        setTitle(R.string.text_simple_recyclerview);
+        fragment = SimpleRecyclerViewFragment.newInstance();
+        break;
+      case R.id.action_material_recyclerview:
+        setTitle(R.string.text_material_recyclerview);
+        fragment = MaterialRecyclerViewFragment.newInstance();
+        break;
+      case R.id.action_header_recyclerview:
+        setTitle(R.string.text_header_recyclerview);
+        fragment = HeaderRecyclerViewFragment.newInstance();
+        break;
+      case R.id.action_header_footer_recyclerview:
+        setTitle(R.string.text_header_footer_recyclerview);
+        fragment = HeaderFooterRecyclerViewFragment.newInstance();
+        break;
+      case R.id.action_multiple_header_recyclerview:
+        setTitle(R.string.text_multiple_header_recyclerview);
+        fragment = MultipleHeaderRecyclerViewFragment.newInstance();
+        break;
+      //case R.id.action_multi_state_recyclerview:
+      //  setTitle(R.string.text_multi_state_recyclerview);
+      //  vRecyclerView.setAdapter(mMultiStateAdapter);
+      //  return true;
+      case R.id.action_endless_recyclerview:
+        setTitle(R.string.text_endless_recyclerview);
+        fragment = EndlessRecyclerViewFragment.newInstance();
+        break;
+    }
+    if (fragment != null) {
+      FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+      if (mFragment != null) {
+        transaction = transaction.remove(mFragment);
       }
-    });
-
-    vRecyclerView.setHasFixedSize(false);
-    vRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-    setTitle(R.string.text_simple_recyclerview);
-    vRecyclerView.setAdapter(mSimpleAdapter);
+      transaction.replace(R.id.fragment, fragment).commit();
+      mFragment = fragment;
+    }
+    return false;
   }
 }

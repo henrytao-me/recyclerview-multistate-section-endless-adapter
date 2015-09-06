@@ -10,4 +10,7 @@
   <string name="text_multiple_header_recyclerview">Multiple Header RecyclerView</string>
   <string name="text_multi_state_recyclerview">MultiState RecyclerView</string>
   <string name="text_endless_recyclerview">Endless RecyclerView</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+  <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

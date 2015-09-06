@@ -20,7 +20,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import me.henrytao.me.sample.R;
 import me.henrytao.recyclerview.RecyclerViewAdapter;
 
 /**
@@ -29,7 +28,7 @@ import me.henrytao.recyclerview.RecyclerViewAdapter;
 public class EndlessAdapter extends RecyclerViewAdapter {
 
   public EndlessAdapter(RecyclerView.Adapter baseAdapter) {
-    super(baseAdapter, 1, 0);
+    super(baseAdapter, 0, 0);
   }
 
   @Override
@@ -49,6 +48,6 @@ public class EndlessAdapter extends RecyclerViewAdapter {
 
   @Override
   public RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent, int index) {
-    return new HeaderHolder(inflater.inflate(R.layout.holder_header, parent, false));
+    return null;
   }
 }
