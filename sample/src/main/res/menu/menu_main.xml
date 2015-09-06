@@ -61,4 +61,10 @@
     android:title="@string/text_endless_recyclerview"
     app:showAsAction="never" />
 
+  <item
+    android:id="@+id/action_header_grid_recyclerview"
+    android:orderInCategory="800"
+    android:title="@string/text_header_grid_recyclerview"
+    app:showAsAction="never" />
+
 </menu>

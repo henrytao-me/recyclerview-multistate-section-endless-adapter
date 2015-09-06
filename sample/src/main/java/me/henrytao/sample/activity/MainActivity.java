@@ -27,6 +27,7 @@ import android.view.MenuItem;
 import me.henrytao.me.sample.R;
 import me.henrytao.sample.fragment.EndlessRecyclerViewFragment;
 import me.henrytao.sample.fragment.HeaderFooterRecyclerViewFragment;
+import me.henrytao.sample.fragment.HeaderGridRecyclerViewFragment;
 import me.henrytao.sample.fragment.HeaderRecyclerViewFragment;
 import me.henrytao.sample.fragment.MaterialRecyclerViewFragment;
 import me.henrytao.sample.fragment.MultiStateRecyclerViewFragment;
@@ -88,6 +89,10 @@ public class MainActivity extends AppCompatActivity {
       case R.id.action_endless_recyclerview:
         setTitle(R.string.text_endless_recyclerview);
         fragment = EndlessRecyclerViewFragment.newInstance();
+        break;
+      case R.id.action_header_grid_recyclerview:
+        setTitle(R.string.text_header_grid_recyclerview);
+        fragment = HeaderGridRecyclerViewFragment.newInstance();
         break;
     }
     if (fragment != null) {
