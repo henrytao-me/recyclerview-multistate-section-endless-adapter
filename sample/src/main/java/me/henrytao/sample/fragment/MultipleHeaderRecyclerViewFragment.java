@@ -27,7 +27,6 @@ import android.view.ViewGroup;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import me.henrytao.me.sample.R;
-import me.henrytao.sample.adapter.HeaderAdapter;
 import me.henrytao.sample.adapter.MultipleHeaderAdapter;
 import me.henrytao.sample.adapter.SimpleAdapter;
 

@@ -11,7 +11,7 @@
   <string name="text_multi_state_recyclerview">MultiState RecyclerView</string>
   <string name="text_endless_recyclerview">Endless RecyclerView</string>
 
-<!-- TODO: Remove or change this placeholder text -->
+  <!-- TODO: Remove or change this placeholder text -->
   <string name="hello_blank_fragment">Hello blank fragment</string>
   <string name="text_header_grid_recyclerview">Header Grid RecyclerView</string>
 </resources>
