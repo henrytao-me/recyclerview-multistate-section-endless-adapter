@@ -46,5 +46,4 @@ dependencies {
   compile(project(":recyclerview")) {
     exclude group: "com.android.support"
   }
-  compile 'com.android.support:support-v4:23.0.1'
 }
