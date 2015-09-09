@@ -26,7 +26,7 @@ Please note that the app on the Play store is not always the latest version.
 compile "me.henrytao:recyclerview:<latest-version>"
 ```
 
-`android-md-core` is deployed to `jCenter`. Make sure you have `jcenter()` in your project gradle.
+`recyclerview-multistate-section-endless-adapter` is deployed to `jCenter`. Make sure you have `jcenter()` in your project gradle.
 
 
 ## Usage
