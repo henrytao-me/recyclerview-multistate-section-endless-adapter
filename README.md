@@ -5,19 +5,7 @@ recyclerview-multistate-section-endless-adapter
 
 MultiState, section, endless recyclerView are made easily by this wrapper adapter.  
 
-I am working section support. I will be deployed soon. If you find that it still doesn't meet your need, don't hersitate to send me a request. I love to work with you to solve problems. [Send a request HERE](https://github.com/henrytao-me/recyclerview-multistate-section-endless-adapter/issues)
-
-
-## Features
-
- ![Button](./screenshots/all-in-one.jpg)
-
-
-## Demo
-
-[![Get it on Google Play](https://developer.android.com/images/brand/en_generic_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=me.henrytao.recyclerview)
-
-Please note that the app on the Play store is not always the latest version. 
+I am working on section support. I will be deployed soon. If you find that it still doesn't meet your need, don't hersitate to send me a request. I love to work with you to solve problems. [Send a request HERE](https://github.com/henrytao-me/recyclerview-multistate-section-endless-adapter/issues)
 
 
 ## Installation
@@ -27,6 +15,18 @@ compile "me.henrytao:recyclerview:<latest-version>"
 ```
 
 `recyclerview-multistate-section-endless-adapter` is deployed to `jCenter`. Make sure you have `jcenter()` in your project gradle.
+
+
+## Demo
+
+[![Get it on Google Play](https://developer.android.com/images/brand/en_generic_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=me.henrytao.recyclerview)
+
+Please note that the app on the Play store is not always the latest version.
+
+
+## Features
+
+ ![Button](./screenshots/all-in-one.jpg)
 
 
 ## Usage
@@ -97,6 +97,7 @@ public class MaterialAdapter extends SimpleRecyclerViewAdapter {
 #### 3. More? 
 
 Please checkout sample section. I have a lot more example there.
+
 
 ## Contributing
 
