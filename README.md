@@ -5,7 +5,7 @@ recyclerview-multistate-section-endless-adapter
 
 MultiState, section, endless recyclerView are made easily by this wrapper adapter.  
 
-I am working on section support. I will be deployed soon. If you find that it still doesn't meet your need, don't hersitate to send me a request. I love to work with you to solve problems. [Send a request HERE](https://github.com/henrytao-me/recyclerview-multistate-section-endless-adapter/issues)
+I am working on section support. It will be deployed soon. If you find that it still doesn't meet your need, don't hersitate to send me a request. I love to work with you to solve problems. [Send a request HERE](https://github.com/henrytao-me/recyclerview-multistate-section-endless-adapter/issues)
 
 
 ## Installation
