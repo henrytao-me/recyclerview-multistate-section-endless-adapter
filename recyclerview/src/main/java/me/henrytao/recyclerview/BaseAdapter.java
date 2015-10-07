@@ -74,7 +74,11 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
     } else if (isFooterView(position)) {
       return ItemViewType.FOOTER.getValue() * getChunkSize() + getFooterViewIndex(position);
     } else if (isItemView(position)) {
-      return ItemViewType.ITEM.getValue() * getChunkSize();
+      if (mBaseAdapter != null) {
+        return ItemViewType.ITEM.getValue() * getChunkSize() + mBaseAdapter.getItemViewType(getDataPosition(position));
+      } else {
+        return ItemViewType.ITEM.getValue() * getChunkSize();
+      }
     }
     return ItemViewType.BLANK.getValue() * getChunkSize();
   }
@@ -114,7 +118,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
         break;
       case ITEM:
         if (mBaseAdapter != null) {
-          return mBaseAdapter.onCreateViewHolder(parent, 0);
+          return mBaseAdapter.onCreateViewHolder(parent, index);
         }
         break;
     }
