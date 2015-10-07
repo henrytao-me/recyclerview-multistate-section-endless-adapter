@@ -107,7 +107,7 @@ Please check the [CONTRIBUTING](CONTRIBUTING.md) guideline before submitting a n
 
 ## Special thanks to:
 
-- [mrlongtt](https://github.com/mrlongtt)
+- [longbkiter07](https://github.com/longbkiter07)
 
 
 ## License
