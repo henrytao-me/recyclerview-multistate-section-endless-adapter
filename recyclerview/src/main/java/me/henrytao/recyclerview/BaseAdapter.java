@@ -27,14 +27,6 @@ import android.view.ViewGroup;
  */
 public abstract class BaseAdapter extends RecyclerView.Adapter {
 
-  public abstract void onBindFooterViewHolder(RecyclerView.ViewHolder holder, int index);
-
-  public abstract void onBindHeaderViewHolder(RecyclerView.ViewHolder holder, int index);
-
-  public abstract RecyclerView.ViewHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent, int index);
-
-  public abstract RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent, int index);
-
   private static final int CHUNK_SIZE = 10;
 
   private final int mFooterCount;
@@ -57,6 +49,14 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
   public BaseAdapter(RecyclerView.Adapter... baseAdapter) {
     this(0, 0, baseAdapter);
   }
+
+  public abstract void onBindFooterViewHolder(RecyclerView.ViewHolder holder, int index);
+
+  public abstract void onBindHeaderViewHolder(RecyclerView.ViewHolder holder, int index);
+
+  public abstract RecyclerView.ViewHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent, int index);
+
+  public abstract RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent, int index);
 
   @Override
   public int getItemCount() {
@@ -142,8 +142,8 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
       return 0;
     }
     int count = 0;
-    for (RecyclerView.Adapter adapter : mBaseAdapters) {
-      count += adapter.getItemCount();
+    for (int i = 0; i < mBaseAdapters.length; i++) {
+      count += mBaseAdapters[i].getItemCount();
     }
     return count;
   }
@@ -335,10 +335,6 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
 
   public static class BaseHolder extends RecyclerView.ViewHolder {
 
-    protected static View inflate(LayoutInflater inflater, ViewGroup parent, @LayoutRes int layoutId) {
-      return inflater.inflate(layoutId, parent, false);
-    }
-
     public BaseHolder(View itemView) {
       super(itemView);
     }
@@ -352,6 +348,10 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
       if (isFillParent && parent != null) {
         getItemView().getLayoutParams().height = parent.getMeasuredHeight();
       }
+    }
+
+    protected static View inflate(LayoutInflater inflater, ViewGroup parent, @LayoutRes int layoutId) {
+      return inflater.inflate(layoutId, parent, false);
     }
 
     public View getItemView() {
