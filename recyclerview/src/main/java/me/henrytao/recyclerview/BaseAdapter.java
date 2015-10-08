@@ -27,15 +27,7 @@ import android.view.ViewGroup;
  */
 public abstract class BaseAdapter extends RecyclerView.Adapter {
 
-  public abstract void onBindFooterViewHolder(RecyclerView.ViewHolder holder, int index);
-
-  public abstract void onBindHeaderViewHolder(RecyclerView.ViewHolder holder, int index);
-
-  public abstract RecyclerView.ViewHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent, int index);
-
-  public abstract RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent, int index);
-
-  private static final int CHUNK_SIZE = 1000;
+  private static final int CHUNK_SIZE = 10;
 
   private final int mFooterCount;
 
@@ -43,24 +35,28 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
 
   private RecyclerView.AdapterDataObserver mAdapterDataObserver;
 
-  private RecyclerView.Adapter mBaseAdapter;
+  private RecyclerView.Adapter[] mBaseAdapters;
 
   private boolean mIsBaseAdapterEnabled;
 
-  public BaseAdapter(RecyclerView.Adapter baseAdapter, int headerCount, int footerCount) {
+  public BaseAdapter(int headerCount, int footerCount, RecyclerView.Adapter... baseAdapter) {
     mIsBaseAdapterEnabled = true;
     mHeaderCount = headerCount;
     mFooterCount = footerCount;
     setBaseAdapter(baseAdapter, false);
   }
 
-  public BaseAdapter(RecyclerView.Adapter baseAdapter) {
-    this(baseAdapter, 0, 0);
+  public BaseAdapter(RecyclerView.Adapter... baseAdapter) {
+    this(0, 0, baseAdapter);
   }
 
-  public BaseAdapter() {
-    this(null);
-  }
+  public abstract void onBindFooterViewHolder(RecyclerView.ViewHolder holder, int index);
+
+  public abstract void onBindHeaderViewHolder(RecyclerView.ViewHolder holder, int index);
+
+  public abstract RecyclerView.ViewHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent, int index);
+
+  public abstract RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent, int index);
 
   @Override
   public int getItemCount() {
@@ -70,17 +66,23 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
   @Override
   public int getItemViewType(int position) {
     if (isHeaderView(position)) {
-      return ItemViewType.HEADER.getValue() * getChunkSize() + getHeaderViewIndex(position);
+      return (ItemViewType.HEADER.getValue() << (getChunkSize() + getAdapterSize())) | getHeaderViewIndex(position);
     } else if (isFooterView(position)) {
-      return ItemViewType.FOOTER.getValue() * getChunkSize() + getFooterViewIndex(position);
+      return (ItemViewType.FOOTER.getValue() << (getChunkSize() + getAdapterSize())) | getFooterViewIndex(position);
     } else if (isItemView(position)) {
-      if (mBaseAdapter != null) {
-        return ItemViewType.ITEM.getValue() * getChunkSize() + mBaseAdapter.getItemViewType(getDataPosition(position));
+      if (mBaseAdapters != null) {
+        int dataPosition = getDataPosition(position);
+        int[] baseAdapterInfo = getBaseAdapterInfo(dataPosition);
+        if (baseAdapterInfo[0] >= 0) {
+          return (ItemViewType.ITEM.getValue() << (getChunkSize() + getAdapterSize()))
+              | ItemViewType.ITEM.getValue() << (getChunkSize() + baseAdapterInfo[0])
+              | mBaseAdapters[baseAdapterInfo[0]].getItemViewType(baseAdapterInfo[1]);
+        }
       } else {
-        return ItemViewType.ITEM.getValue() * getChunkSize();
+        return ItemViewType.ITEM.getValue() << (getChunkSize() + getAdapterSize());
       }
     }
-    return ItemViewType.BLANK.getValue() * getChunkSize();
+    return ItemViewType.BLANK.getValue() << (getChunkSize() + getAdapterSize());
   }
 
   @Override
@@ -89,15 +91,19 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
       onBindFooterViewHolder(holder, getFooterViewIndex(position));
     } else if (isHeaderView(position)) {
       onBindHeaderViewHolder(holder, getHeaderViewIndex(position));
-    } else if (isItemView(position) && mBaseAdapter != null) {
-      mBaseAdapter.onBindViewHolder(holder, getDataPosition(position));
+    } else if (isItemView(position) && mBaseAdapters != null) {
+      int dataPosition = getDataPosition(position);
+      int[] adapterInfo = getBaseAdapterInfo(dataPosition);
+      mBaseAdapters[adapterInfo[0]].onBindViewHolder(holder, adapterInfo[1]);
     }
   }
 
   @Override
   public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-    int index = viewType - viewType / getChunkSize() * getChunkSize();
-    viewType = viewType / getChunkSize();
+    int baseViewType = (viewType >> (getChunkSize() + getAdapterSize()));
+    int baseIndex = viewType & (~(baseViewType << (getChunkSize() + getAdapterSize())));
+    int index = baseIndex & (~(baseViewType << getChunkSize()));
+    viewType = baseViewType;
     ItemViewType itemViewType = ItemViewType.BLANK;
     if (viewType == ItemViewType.HEADER.getValue()) {
       itemViewType = ItemViewType.HEADER;
@@ -117,8 +123,14 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
         viewHolder = onCreateHeaderViewHolder(layoutInflater, parent, index);
         break;
       case ITEM:
-        if (mBaseAdapter != null) {
-          return mBaseAdapter.onCreateViewHolder(parent, index);
+        if (mBaseAdapters != null) {
+          int temp = baseIndex >> getChunkSize();
+          int adapterPosition = 0;
+          while (temp > baseViewType) {
+            adapterPosition++;
+            temp >>= 1;
+          }
+          viewHolder = mBaseAdapters[adapterPosition].createViewHolder(parent, index);
         }
         break;
     }
@@ -126,10 +138,14 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
   }
 
   public int getBaseItemCount() {
-    if (mBaseAdapter == null || !mIsBaseAdapterEnabled) {
+    if (mBaseAdapters == null || !mIsBaseAdapterEnabled) {
       return 0;
     }
-    return mBaseAdapter.getItemCount();
+    int count = 0;
+    for (int i = 0; i < mBaseAdapters.length; i++) {
+      count += mBaseAdapters[i].getItemCount();
+    }
+    return count;
   }
 
   public int getDataPosition(int position) {
@@ -160,7 +176,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
   }
 
   public boolean isBlankView(int position) {
-    return position < getItemCount() ? false : true;
+    return position >= getItemCount();
   }
 
   public boolean isFooterView(int position) {
@@ -179,8 +195,12 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
     return new BlankHolder(new View(parent.getContext()));
   }
 
-  public void setBaseAdapter(RecyclerView.Adapter baseAdapter) {
-    setBaseAdapter(baseAdapter, true);
+  public void setBaseAdapter(RecyclerView.Adapter... baseAdapters) {
+    setBaseAdapter(baseAdapters, true);
+  }
+
+  protected int getAdapterSize() {
+    return mBaseAdapters == null ? 0 : mBaseAdapters.length;
   }
 
   protected int getChunkSize() {
@@ -226,13 +246,15 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
     return index;
   }
 
-  protected void setBaseAdapter(RecyclerView.Adapter baseAdapter, boolean notifyDataSetChanged) {
-    if (mBaseAdapter != null && mAdapterDataObserver != null) {
-      mBaseAdapter.unregisterAdapterDataObserver(mAdapterDataObserver);
+  protected void setBaseAdapter(RecyclerView.Adapter[] baseAdapters, boolean notifyDataSetChanged) {
+    if (mBaseAdapters != null && mAdapterDataObserver != null) {
+      for (RecyclerView.Adapter adapter : mBaseAdapters) {
+        adapter.unregisterAdapterDataObserver(mAdapterDataObserver);
+      }
     }
-    mBaseAdapter = baseAdapter;
+    mBaseAdapters = baseAdapters;
     mAdapterDataObserver = null;
-    if (mBaseAdapter != null) {
+    if (mBaseAdapters != null) {
       mAdapterDataObserver = new RecyclerView.AdapterDataObserver() {
         @Override
         public void onChanged() {
@@ -274,15 +296,31 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
           }
         }
       };
-      mBaseAdapter.registerAdapterDataObserver(mAdapterDataObserver);
+      for (RecyclerView.Adapter adapter : mBaseAdapters) {
+        adapter.registerAdapterDataObserver(mAdapterDataObserver);
+      }
     }
     if (notifyDataSetChanged) {
       notifyDataSetChanged();
     }
   }
 
+  private int[] getBaseAdapterInfo(int dataPosition) {
+    if (mBaseAdapters == null) {
+      return new int[]{-1, -1};
+    }
+    for (int i = 0; i < mBaseAdapters.length; i++) {
+      if (dataPosition < mBaseAdapters[i].getItemCount()) {
+        return new int[]{i, dataPosition};
+      } else {
+        dataPosition -= mBaseAdapters[i].getItemCount();
+      }
+    }
+    return new int[]{-1, -1};
+  }
+
   public enum ItemViewType {
-    BLANK(0), FOOTER(1), HEADER(2), ITEM(3);
+    BLANK(0), ITEM(1), HEADER(2), FOOTER(3);
 
     private final int mValue;
 
@@ -297,10 +335,6 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
 
   public static class BaseHolder extends RecyclerView.ViewHolder {
 
-    protected static View inflate(LayoutInflater inflater, ViewGroup parent, @LayoutRes int layoutId) {
-      return inflater.inflate(layoutId, parent, false);
-    }
-
     public BaseHolder(View itemView) {
       super(itemView);
     }
@@ -314,6 +348,10 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
       if (isFillParent && parent != null) {
         getItemView().getLayoutParams().height = parent.getMeasuredHeight();
       }
+    }
+
+    protected static View inflate(LayoutInflater inflater, ViewGroup parent, @LayoutRes int layoutId) {
+      return inflater.inflate(layoutId, parent, false);
     }
 
     public View getItemView() {

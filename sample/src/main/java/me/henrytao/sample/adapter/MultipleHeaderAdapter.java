@@ -30,7 +30,7 @@ import me.henrytao.recyclerview.RecyclerViewAdapter;
 public class MultipleHeaderAdapter extends RecyclerViewAdapter {
 
   public MultipleHeaderAdapter(RecyclerView.Adapter baseAdapter) {
-    super(baseAdapter, 2, 0);
+    super(2, 0, baseAdapter);
   }
 
   @Override

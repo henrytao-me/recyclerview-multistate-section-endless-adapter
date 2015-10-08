@@ -31,6 +31,7 @@ import me.henrytao.sample.fragment.HeaderGridRecyclerViewFragment;
 import me.henrytao.sample.fragment.HeaderRecyclerViewFragment;
 import me.henrytao.sample.fragment.InfoFragment;
 import me.henrytao.sample.fragment.MaterialRecyclerViewFragment;
+import me.henrytao.sample.fragment.MergeAdapterRecyclerViewFragment;
 import me.henrytao.sample.fragment.MultiStateRecyclerViewFragment;
 import me.henrytao.sample.fragment.MultipleHeaderRecyclerViewFragment;
 import me.henrytao.sample.fragment.SimpleRecyclerViewFragment;
@@ -99,6 +100,9 @@ public class MainActivity extends AppCompatActivity {
         setTitle(R.string.text_header_grid_recyclerview);
         fragment = HeaderGridRecyclerViewFragment.newInstance();
         break;
+      case R.id.action_merge_adapter:
+        setTitle(R.string.text_merge_adapter_recyclerview);
+        fragment = MergeAdapterRecyclerViewFragment.newInstance();
     }
     if (fragment != null) {
       FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

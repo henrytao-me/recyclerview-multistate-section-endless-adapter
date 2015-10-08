@@ -30,7 +30,7 @@ public abstract class SimpleRecyclerViewAdapter extends RecyclerViewAdapter {
   public abstract RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent);
 
   public SimpleRecyclerViewAdapter(RecyclerView.Adapter baseAdapter) {
-    super(baseAdapter, 1, 1);
+    super(1, 1, baseAdapter);
   }
 
   public SimpleRecyclerViewAdapter() {

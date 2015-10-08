@@ -43,7 +43,7 @@ public class MultiStateAdapter extends RecyclerViewAdapter {
   private static final int INDEX_LOADING = 0;
 
   public MultiStateAdapter(RecyclerView.Adapter baseAdapter) {
-    super(baseAdapter, HEADER_COUNT, FOOTER_COUNT);
+    super(HEADER_COUNT, FOOTER_COUNT, baseAdapter);
     setHeaderViewState(R.id.tag_loading, INDEX_LOADING, View.GONE);
     setHeaderViewState(R.id.tag_empty, INDEX_EMPTY, View.GONE);
     setHeaderViewState(R.id.tag_error, INDEX_ERROR, View.GONE);
