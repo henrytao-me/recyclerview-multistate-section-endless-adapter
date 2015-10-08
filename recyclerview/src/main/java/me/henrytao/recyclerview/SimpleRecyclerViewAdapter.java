@@ -25,6 +25,10 @@ import android.view.ViewGroup;
  */
 public abstract class SimpleRecyclerViewAdapter extends RecyclerViewAdapter {
 
+  public abstract RecyclerView.ViewHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent);
+
+  public abstract RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent);
+
   public SimpleRecyclerViewAdapter(RecyclerView.Adapter baseAdapter) {
     super(1, 1, baseAdapter);
   }
@@ -32,10 +36,6 @@ public abstract class SimpleRecyclerViewAdapter extends RecyclerViewAdapter {
   public SimpleRecyclerViewAdapter() {
     this(null);
   }
-
-  public abstract RecyclerView.ViewHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent);
-
-  public abstract RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent);
 
   @Override
   public void onBindFooterViewHolder(RecyclerView.ViewHolder holder, int index) {

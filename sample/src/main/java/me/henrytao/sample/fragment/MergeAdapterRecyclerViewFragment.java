@@ -32,6 +32,10 @@ import me.henrytao.sample.adapter.SimpleAdapter;
 
 public class MergeAdapterRecyclerViewFragment extends Fragment {
 
+  public static MergeAdapterRecyclerViewFragment newInstance() {
+    return new MergeAdapterRecyclerViewFragment();
+  }
+
   @Bind(android.R.id.list)
   RecyclerView vRecyclerView;
 
@@ -40,10 +44,6 @@ public class MergeAdapterRecyclerViewFragment extends Fragment {
   private SimpleAdapter[] mSimpleAdapters;
 
   public MergeAdapterRecyclerViewFragment() {
-  }
-
-  public static MergeAdapterRecyclerViewFragment newInstance() {
-    return new MergeAdapterRecyclerViewFragment();
   }
 
   @Override
