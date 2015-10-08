@@ -28,6 +28,13 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.ItemHolder
     }
   }
 
+  public SimpleAdapter(int itemCount) {
+    mData = new ArrayList<>();
+    for (int i = 0; i < itemCount; i++) {
+      mData.add(i);
+    }
+  }
+
   @Override
   public int getItemCount() {
     return mData.size();

@@ -17,8 +17,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
-  xmlns:compat="http://schemas.android.com/apk/res-auto"
-  tools:context=".MainActivity">
+  tools:context=".MainActivity"
+  xmlns:compat="http://schemas.android.com/apk/res-auto">
 
   <item
     android:id="@+id/action_info"
@@ -74,4 +74,9 @@
     android:title="@string/text_header_grid_recyclerview"
     app:showAsAction="never" />
 
+  <item
+    android:id="@+id/action_merge_adapter"
+    android:orderInCategory="800"
+    android:title="@string/text_multi_adapter_recyclerview"
+    app:showAsAction="never" />
 </menu>

@@ -39,8 +39,8 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements Endless
 
   private Map<Integer, ViewState> mViewState = new HashMap<>();
 
-  public RecyclerViewAdapter(RecyclerView.Adapter baseAdapter, int headerCount, int footerCount) {
-    super(baseAdapter, headerCount, footerCount);
+  public RecyclerViewAdapter(int headerCount, int footerCount, RecyclerView.Adapter... baseAdapter) {
+    super(headerCount, footerCount, baseAdapter);
   }
 
   public RecyclerViewAdapter(RecyclerView.Adapter baseAdapter) {
@@ -78,7 +78,7 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements Endless
     if (itemViewType != null) {
       for (ViewState viewState : mViewState.values()) {
         if (viewState.isMatch(itemViewType, index) && viewState.getVisibility() == View.GONE) {
-          return ItemViewType.BLANK.getValue() * getChunkSize();
+          return ItemViewType.BLANK.getValue() << (getChunkSize() + getAdapterSize());
         }
       }
     }

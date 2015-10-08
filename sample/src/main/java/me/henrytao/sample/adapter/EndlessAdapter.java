@@ -28,7 +28,7 @@ import me.henrytao.recyclerview.RecyclerViewAdapter;
 public class EndlessAdapter extends RecyclerViewAdapter {
 
   public EndlessAdapter(RecyclerView.Adapter baseAdapter) {
-    super(baseAdapter, 0, 0);
+    super(0, 0, baseAdapter);
   }
 
   @Override
