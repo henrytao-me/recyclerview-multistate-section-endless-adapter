@@ -32,8 +32,7 @@ Please note that the app on the Play store is not always the latest version.
 - Header on grid.
 - Merge adapter.
 
-
- ![Button](./screenshots/all-in-one.jpg)
+![Button](./screenshots/all-in-one.jpg)
 
 
 ## Usage
