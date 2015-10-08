@@ -27,7 +27,7 @@ import android.view.ViewGroup;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import me.henrytao.me.sample.R;
-import me.henrytao.sample.adapter.MultiChildAdapter;
+import me.henrytao.sample.adapter.MergeAdapter;
 import me.henrytao.sample.adapter.SimpleAdapter;
 
 public class MergeAdapterRecyclerViewFragment extends Fragment {
@@ -39,7 +39,7 @@ public class MergeAdapterRecyclerViewFragment extends Fragment {
   @Bind(android.R.id.list)
   RecyclerView vRecyclerView;
 
-  private MultiChildAdapter mMultipleHeaderAdapter;
+  private MergeAdapter mMultipleHeaderAdapter;
 
   private SimpleAdapter[] mSimpleAdapters;
 
@@ -66,7 +66,7 @@ public class MergeAdapterRecyclerViewFragment extends Fragment {
     for (int i = 0; i < mSimpleAdapters.length; i++) {
       mSimpleAdapters[i] = new SimpleAdapter(5 + i * 10);
     }
-    mMultipleHeaderAdapter = new MultiChildAdapter(mSimpleAdapters);
+    mMultipleHeaderAdapter = new MergeAdapter(mSimpleAdapters);
     vRecyclerView.setHasFixedSize(false);
     vRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     vRecyclerView.setAdapter(mMultipleHeaderAdapter);

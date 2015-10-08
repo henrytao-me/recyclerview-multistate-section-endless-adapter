@@ -27,9 +27,9 @@ import me.henrytao.recyclerview.RecyclerViewAdapter;
 /**
  * Created by SILONG on 10/8/15.
  */
-public class MultiChildAdapter extends RecyclerViewAdapter {
+public class MergeAdapter extends RecyclerViewAdapter {
 
-  public MultiChildAdapter(RecyclerView.Adapter... baseAdapters) {
+  public MergeAdapter(RecyclerView.Adapter... baseAdapters) {
     super(2, 0, baseAdapters);
   }
 

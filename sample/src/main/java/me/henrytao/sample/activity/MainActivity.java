@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         fragment = HeaderGridRecyclerViewFragment.newInstance();
         break;
       case R.id.action_merge_adapter:
-        setTitle(R.string.text_multi_adapter_recyclerview);
+        setTitle(R.string.text_merge_adapter_recyclerview);
         fragment = MergeAdapterRecyclerViewFragment.newInstance();
     }
     if (fragment != null) {
