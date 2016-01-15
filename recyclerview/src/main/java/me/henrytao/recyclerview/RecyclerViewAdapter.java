@@ -163,7 +163,8 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements Endless
     if (mViewState.containsKey(tag)) {
       ViewState viewState = mViewState.get(tag);
       if ((viewState.getVisibility() == View.GONE && visibility == View.GONE) ||
-          (viewState.getVisibility() == View.VISIBLE && visibility == View.VISIBLE)) {
+          (viewState.getVisibility() == View.VISIBLE && visibility == View.VISIBLE) ||
+          (viewState.getVisibility() == View.INVISIBLE && visibility == View.INVISIBLE)) {
         return;
       }
       viewState.setVisibility(visibility);

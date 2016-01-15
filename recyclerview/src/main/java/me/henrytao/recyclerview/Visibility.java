@@ -24,7 +24,7 @@ import java.lang.annotation.RetentionPolicy;
 /**
  * Created by henrytao on 8/21/15.
  */
-@IntDef({View.VISIBLE, View.GONE})
+@IntDef({View.VISIBLE, View.GONE, View.INVISIBLE})
 @Retention(RetentionPolicy.SOURCE)
 public @interface Visibility {
 
