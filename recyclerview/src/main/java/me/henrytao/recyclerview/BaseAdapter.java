@@ -35,7 +35,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
 
   public abstract RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent, int index);
 
-  private static final int CHUNK_SIZE = 10;
+  private static final int CHUNK_SIZE = 16;
 
   private final int mFooterCount;
 
