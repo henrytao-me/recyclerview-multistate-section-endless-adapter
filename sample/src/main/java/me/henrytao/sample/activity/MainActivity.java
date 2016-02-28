@@ -27,6 +27,7 @@ import android.view.MenuItem;
 import me.henrytao.me.sample.R;
 import me.henrytao.sample.fragment.HeaderFooterRecyclerViewFragment;
 import me.henrytao.sample.fragment.InfoFragment;
+import me.henrytao.sample.fragment.NestedWrapperAdapterFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -63,6 +64,10 @@ public class MainActivity extends AppCompatActivity {
       case R.id.action_header_footer_recyclerview:
         setTitle(R.string.text_header_footer_recyclerview);
         fragment = HeaderFooterRecyclerViewFragment.newInstance();
+        break;
+      case R.id.action_nested_wrapper_adapter:
+        setTitle(R.string.text_nested_wrapper_adapter);
+        fragment = NestedWrapperAdapterFragment.newInstance();
         break;
     }
     if (fragment != null) {

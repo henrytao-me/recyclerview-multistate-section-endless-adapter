@@ -3,13 +3,8 @@
 
   <string name="hello_world">Hello world!</string>
   <string name="action_settings">Settings</string>
-  <string name="text_simple_recyclerview">Simple RecyclerView</string>
-  <string name="text_material_recyclerview">Material RecyclerView</string>
-  <string name="text_header_recyclerview">Header RecyclerView</string>
   <string name="text_header_footer_recyclerview">Header Footer RecyclerView</string>
-  <string name="text_multiple_header_recyclerview">Multiple Header RecyclerView</string>
-  <string name="text_multi_state_recyclerview">MultiState RecyclerView</string>
-  <string name="text_endless_recyclerview">Endless RecyclerView</string>
+  <string name="text_nested_wrapper_adapter">Nested Wrapper Adapter</string>
 
   <!-- TODO: Remove or change this placeholder text -->
   <string name="hello_blank_fragment">Hello blank fragment</string>

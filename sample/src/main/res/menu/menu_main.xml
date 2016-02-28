@@ -28,37 +28,11 @@
 
   <item
     android:id="@+id/action_header_footer_recyclerview"
-    android:orderInCategory="400"
     android:title="@string/text_header_footer_recyclerview"
     app:showAsAction="never" />
 
   <item
-    android:id="@+id/action_multiple_header_recyclerview"
-    android:orderInCategory="500"
-    android:title="@string/text_multiple_header_recyclerview"
-    app:showAsAction="never" />
-
-  <item
-    android:id="@+id/action_multi_state_recyclerview"
-    android:orderInCategory="600"
-    android:title="@string/text_multi_state_recyclerview"
-    app:showAsAction="never" />
-
-  <item
-    android:id="@+id/action_endless_recyclerview"
-    android:orderInCategory="700"
-    android:title="@string/text_endless_recyclerview"
-    app:showAsAction="never" />
-
-  <item
-    android:id="@+id/action_header_grid_recyclerview"
-    android:orderInCategory="800"
-    android:title="@string/text_header_grid_recyclerview"
-    app:showAsAction="never" />
-
-  <item
-    android:id="@+id/action_merge_adapter"
-    android:orderInCategory="800"
-    android:title="@string/text_merge_adapter_recyclerview"
+    android:id="@+id/action_nested_wrapper_adapter"
+    android:title="@string/text_nested_wrapper_adapter"
     app:showAsAction="never" />
 </menu>
