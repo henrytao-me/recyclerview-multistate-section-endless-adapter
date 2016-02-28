@@ -25,16 +25,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import me.henrytao.me.sample.R;
-import me.henrytao.sample.fragment.EndlessRecyclerViewFragment;
 import me.henrytao.sample.fragment.HeaderFooterRecyclerViewFragment;
-import me.henrytao.sample.fragment.HeaderGridRecyclerViewFragment;
-import me.henrytao.sample.fragment.HeaderRecyclerViewFragment;
 import me.henrytao.sample.fragment.InfoFragment;
-import me.henrytao.sample.fragment.MaterialRecyclerViewFragment;
-import me.henrytao.sample.fragment.MergeAdapterRecyclerViewFragment;
-import me.henrytao.sample.fragment.MultiStateRecyclerViewFragment;
-import me.henrytao.sample.fragment.MultipleHeaderRecyclerViewFragment;
-import me.henrytao.sample.fragment.SimpleRecyclerViewFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -58,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-    onOptionsItemSelected(R.id.action_simple_recyclerview);
+    onOptionsItemSelected(R.id.action_header_footer_recyclerview);
   }
 
   protected boolean onOptionsItemSelected(@IdRes int id) {
@@ -68,41 +60,10 @@ public class MainActivity extends AppCompatActivity {
         setTitle(getString(R.string.text_info));
         fragment = InfoFragment.newInstance();
         break;
-      case R.id.action_simple_recyclerview:
-        setTitle(R.string.text_simple_recyclerview);
-        fragment = SimpleRecyclerViewFragment.newInstance();
-        break;
-      case R.id.action_material_recyclerview:
-        setTitle(R.string.text_material_recyclerview);
-        fragment = MaterialRecyclerViewFragment.newInstance();
-        break;
-      case R.id.action_header_recyclerview:
-        setTitle(R.string.text_header_recyclerview);
-        fragment = HeaderRecyclerViewFragment.newInstance();
-        break;
       case R.id.action_header_footer_recyclerview:
         setTitle(R.string.text_header_footer_recyclerview);
         fragment = HeaderFooterRecyclerViewFragment.newInstance();
         break;
-      case R.id.action_multiple_header_recyclerview:
-        setTitle(R.string.text_multiple_header_recyclerview);
-        fragment = MultipleHeaderRecyclerViewFragment.newInstance();
-        break;
-      case R.id.action_multi_state_recyclerview:
-        setTitle(R.string.text_multi_state_recyclerview);
-        fragment = MultiStateRecyclerViewFragment.newInstance();
-        break;
-      case R.id.action_endless_recyclerview:
-        setTitle(R.string.text_endless_recyclerview);
-        fragment = EndlessRecyclerViewFragment.newInstance();
-        break;
-      case R.id.action_header_grid_recyclerview:
-        setTitle(R.string.text_header_grid_recyclerview);
-        fragment = HeaderGridRecyclerViewFragment.newInstance();
-        break;
-      case R.id.action_merge_adapter:
-        setTitle(R.string.text_merge_adapter_recyclerview);
-        fragment = MergeAdapterRecyclerViewFragment.newInstance();
     }
     if (fragment != null) {
       FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

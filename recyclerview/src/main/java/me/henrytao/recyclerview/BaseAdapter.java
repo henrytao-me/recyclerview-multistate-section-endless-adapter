@@ -75,7 +75,13 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
 
   @Override
   public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
+    if (isHeaderView(position)) {
+      onBindHeaderViewHolder(holder, getHeaderViewIndex(position));
+    } else if (isFooterView(position)) {
+      onBindFooterViewHolder(holder, getFooterViewIndex(position));
+    } else if (isItemView(position)) {
+      mBaseAdapter.onBindViewHolder(holder, getItemViewIndex(position));
+    }
   }
 
   @Override

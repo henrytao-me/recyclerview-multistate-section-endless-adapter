@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 "Henry Tao <hi@henrytao.me>"
+ * Copyright 2016 "Henry Tao <hi@henrytao.me>"
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,27 @@
  * limitations under the License.
  */
 
-package me.henrytao.sample.adapter;
+package me.henrytao.recyclerview;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
-import me.henrytao.me.sample.R;
-import me.henrytao.recyclerview.old.RecyclerViewAdapter;
 
 /**
- * Created by SILONG on 10/8/15.
+ * Created by henrytao on 8/18/15.
  */
-public class MergeAdapter extends RecyclerViewAdapter {
+public abstract class SimpleRecyclerViewAdapter extends RecyclerViewAdapter {
 
-  public MergeAdapter(RecyclerView.Adapter... baseAdapters) {
-    super(2, 0, baseAdapters);
+  public abstract RecyclerView.ViewHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent);
+
+  public abstract RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent);
+
+  public SimpleRecyclerViewAdapter(RecyclerView.Adapter baseAdapter) {
+    super(1, 1, baseAdapter);
+  }
+
+  public SimpleRecyclerViewAdapter() {
+    this(null);
   }
 
   @Override
@@ -45,21 +49,11 @@ public class MergeAdapter extends RecyclerViewAdapter {
 
   @Override
   public RecyclerView.ViewHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent, int index) {
-    return null;
+    return onCreateFooterViewHolder(inflater, parent);
   }
 
   @Override
   public RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent, int index) {
-    HeaderHolder holder = null;
-    switch (index) {
-      case 0:
-        holder = new HeaderHolder(inflater, parent, R.layout.holder_header);
-        break;
-      case 1:
-        holder = new HeaderHolder(inflater, parent, R.layout.holder_header);
-        ((TextView) holder.getItemView().findViewById(R.id.title)).setText("This is another header");
-        break;
-    }
-    return holder;
+    return onCreateHeaderViewHolder(inflater, parent);
   }
 }

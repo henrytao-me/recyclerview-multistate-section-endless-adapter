@@ -53,5 +53,4 @@
     <item name="android:layout_marginTop">@dimen/mdLayout_spacing_md</item>
     <item name="android:layout_marginBottom">@dimen/mdLayout_spacing_md</item>
   </style>
-
 </resources>

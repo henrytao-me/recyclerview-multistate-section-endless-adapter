@@ -5,7 +5,9 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import me.henrytao.me.sample.R;
-import me.henrytao.recyclerview.old.SimpleRecyclerViewAdapter;
+import me.henrytao.recyclerview.SimpleRecyclerViewAdapter;
+import me.henrytao.recyclerview.holder.FooterHolder;
+import me.henrytao.recyclerview.holder.HeaderHolder;
 
 /**
  * Created by henrytao on 8/16/15.

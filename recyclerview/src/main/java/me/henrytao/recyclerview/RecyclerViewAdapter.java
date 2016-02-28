@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package me.henrytao.recyclerview.old;
+package me.henrytao.recyclerview;
 
-import android.support.annotation.IntDef;
-import android.view.View;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import android.support.v7.widget.RecyclerView;
 
 /**
- * Created by henrytao on 8/21/15.
+ * Created by henrytao on 2/28/16.
  */
-@IntDef({View.VISIBLE, View.GONE, View.INVISIBLE})
-@Retention(RetentionPolicy.SOURCE)
-public @interface Visibility {
+public abstract class RecyclerViewAdapter extends BaseAdapter {
 
+  public RecyclerViewAdapter(int headerCount, int footerCount, RecyclerView.Adapter baseAdapter) {
+    super(headerCount, footerCount, baseAdapter);
+  }
+
+  public RecyclerViewAdapter(RecyclerView.Adapter baseAdapter) {
+    super(baseAdapter);
+  }
 }
