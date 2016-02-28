@@ -20,7 +20,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import me.henrytao.recyclerview.RecyclerViewAdapter;
+import me.henrytao.recyclerview.old.RecyclerViewAdapter;
 
 /**
  * Created by henrytao on 8/16/15.

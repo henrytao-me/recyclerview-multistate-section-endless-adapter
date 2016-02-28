@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 "Henry Tao <hi@henrytao.me>"
+ * Copyright 2016 "Henry Tao <hi@henrytao.me>"
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,19 @@
  * limitations under the License.
  */
 
-package me.henrytao.recyclerview;
+package me.henrytao.recyclerview.old;
+
+import android.support.annotation.IntDef;
+import android.view.View;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
- * Created by henrytao on 8/16/15.
+ * Created by henrytao on 8/21/15.
  */
-public interface EndlessAdapter {
+@IntDef({View.VISIBLE, View.GONE, View.INVISIBLE})
+@Retention(RetentionPolicy.SOURCE)
+public @interface Visibility {
 
-  int getEndlessThreshold();
-
-  void setEndlessThreshold(int threshold);
-
-  void onNext();
-
-  void setEndlessEnabled(boolean enabled);
-
-  void setOnEndlessListener(OnEndlessListener listener);
-
-  interface OnEndlessListener {
-
-    void onReachThreshold();
-  }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 "Henry Tao <hi@henrytao.me>"
+ * Copyright 2016 "Henry Tao <hi@henrytao.me>"
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package me.henrytao.recyclerview;
+package me.henrytao.recyclerview.old;
 
-import me.henrytao.recyclerview.BaseAdapter.ItemViewType;
+import me.henrytao.recyclerview.old.BaseAdapter.ItemViewType;
 
 /**
  * Created by henrytao on 8/16/15.

@@ -22,7 +22,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import me.henrytao.me.sample.R;
-import me.henrytao.recyclerview.RecyclerViewAdapter;
+import me.henrytao.recyclerview.old.RecyclerViewAdapter;
 
 /**
  * Created by henrytao on 8/16/15.

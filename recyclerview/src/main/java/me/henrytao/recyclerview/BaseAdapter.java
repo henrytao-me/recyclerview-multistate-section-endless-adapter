@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 "Henry Tao <hi@henrytao.me>"
+ * Copyright 2016 "Henry Tao <hi@henrytao.me>"
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,15 @@
 
 package me.henrytao.recyclerview;
 
-import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import me.henrytao.recyclerview.holder.BlankHolder;
+
 /**
- * Created by henrytao on 8/16/15.
+ * Created by henrytao on 2/27/16.
  */
 public abstract class BaseAdapter extends RecyclerView.Adapter {
 
@@ -35,26 +36,23 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
 
   public abstract RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent, int index);
 
-  private static final int CHUNK_SIZE = 16;
-
   private final int mFooterCount;
 
   private final int mHeaderCount;
 
   private RecyclerView.AdapterDataObserver mAdapterDataObserver;
 
-  private RecyclerView.Adapter[] mBaseAdapters;
+  private RecyclerView.Adapter mBaseAdapter;
 
-  private boolean mIsBaseAdapterEnabled;
+  private boolean mIsBaseAdapterEnabled = true;
 
-  public BaseAdapter(int headerCount, int footerCount, RecyclerView.Adapter... baseAdapter) {
-    mIsBaseAdapterEnabled = true;
+  public BaseAdapter(int headerCount, int footerCount, RecyclerView.Adapter baseAdapter) {
     mHeaderCount = headerCount;
     mFooterCount = footerCount;
     setBaseAdapter(baseAdapter, false);
   }
 
-  public BaseAdapter(RecyclerView.Adapter... baseAdapter) {
+  public BaseAdapter(RecyclerView.Adapter baseAdapter) {
     this(0, 0, baseAdapter);
   }
 
@@ -66,90 +64,46 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
   @Override
   public int getItemViewType(int position) {
     if (isHeaderView(position)) {
-      return (ItemViewType.HEADER.getValue() << (getChunkSize() + getAdapterSize())) | getHeaderViewIndex(position);
+      return (getHeaderViewIndex(position) << ItemViewType.CHUNK_SIZE) | ItemViewType.HEADER.getValue();
     } else if (isFooterView(position)) {
-      return (ItemViewType.FOOTER.getValue() << (getChunkSize() + getAdapterSize())) | getFooterViewIndex(position);
+      return (getFooterViewIndex(position) << ItemViewType.CHUNK_SIZE) | ItemViewType.FOOTER.getValue();
     } else if (isItemView(position)) {
-      if (mBaseAdapters != null) {
-        int dataPosition = getDataPosition(position);
-        int[] baseAdapterInfo = getBaseAdapterInfo(dataPosition);
-        if (baseAdapterInfo[0] >= 0) {
-          return (ItemViewType.ITEM.getValue() << (getChunkSize() + getAdapterSize()))
-              | ItemViewType.ITEM.getValue() << (getChunkSize() + baseAdapterInfo[0])
-              | mBaseAdapters[baseAdapterInfo[0]].getItemViewType(baseAdapterInfo[1]);
-        }
-      } else {
-        return ItemViewType.ITEM.getValue() << (getChunkSize() + getAdapterSize());
-      }
+      return mBaseAdapter.getItemViewType(getItemViewIndex(position)) << ItemViewType.CHUNK_SIZE | ItemViewType.ITEM.getValue();
     }
-    return ItemViewType.BLANK.getValue() << (getChunkSize() + getAdapterSize());
+    return ItemViewType.BLANK.getValue();
   }
 
   @Override
   public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-    if (isFooterView(position)) {
-      onBindFooterViewHolder(holder, getFooterViewIndex(position));
-    } else if (isHeaderView(position)) {
-      onBindHeaderViewHolder(holder, getHeaderViewIndex(position));
-    } else if (isItemView(position) && mBaseAdapters != null) {
-      int dataPosition = getDataPosition(position);
-      int[] adapterInfo = getBaseAdapterInfo(dataPosition);
-      mBaseAdapters[adapterInfo[0]].onBindViewHolder(holder, adapterInfo[1]);
-    }
+
   }
 
   @Override
   public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-    int baseViewType = (viewType >> (getChunkSize() + getAdapterSize()));
-    int baseIndex = viewType & (~(baseViewType << (getChunkSize() + getAdapterSize())));
-    int index = baseIndex & (~(baseViewType << getChunkSize()));
-    viewType = baseViewType;
-    ItemViewType itemViewType = ItemViewType.BLANK;
-    if (viewType == ItemViewType.HEADER.getValue()) {
-      itemViewType = ItemViewType.HEADER;
-    } else if (viewType == ItemViewType.FOOTER.getValue()) {
-      itemViewType = ItemViewType.FOOTER;
-    } else if (viewType == ItemViewType.ITEM.getValue()) {
-      itemViewType = ItemViewType.ITEM;
-    }
+    int viewIndex = viewType >> ItemViewType.CHUNK_SIZE;
+    viewType = ~(viewIndex << ItemViewType.CHUNK_SIZE) & viewType;
 
     LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
     RecyclerView.ViewHolder viewHolder = null;
-    switch (itemViewType) {
-      case FOOTER:
-        viewHolder = onCreateFooterViewHolder(layoutInflater, parent, index);
-        break;
+    switch (ItemViewType.getValue(viewType)) {
       case HEADER:
-        viewHolder = onCreateHeaderViewHolder(layoutInflater, parent, index);
+        viewHolder = onCreateHeaderViewHolder(layoutInflater, parent, viewIndex);
         break;
       case ITEM:
-        if (mBaseAdapters != null) {
-          int temp = baseIndex >> getChunkSize();
-          int adapterPosition = 0;
-          while (temp > baseViewType) {
-            adapterPosition++;
-            temp >>= 1;
-          }
-          viewHolder = mBaseAdapters[adapterPosition].createViewHolder(parent, index);
-        }
+        viewHolder = mBaseAdapter.onCreateViewHolder(parent, viewIndex);
+        break;
+      case FOOTER:
+        viewHolder = onCreateFooterViewHolder(layoutInflater, parent, viewIndex);
         break;
     }
-    return viewHolder == null ? onCreateBlankViewHolder(layoutInflater, parent) : viewHolder;
+    return viewHolder != null ? viewHolder : onCreateBlankViewHolder(layoutInflater, parent);
   }
 
   public int getBaseItemCount() {
-    if (mBaseAdapters == null || !mIsBaseAdapterEnabled) {
+    if (mBaseAdapter == null || !isBaseAdaptersEnabled()) {
       return 0;
     }
-    int count = 0;
-    for (int i = 0; i < mBaseAdapters.length; i++) {
-      count += mBaseAdapters[i].getItemCount();
-    }
-    return count;
-  }
-
-  public int getDataPosition(int position) {
-    return position - getHeaderCount();
+    return mBaseAdapter.getItemCount();
   }
 
   public int getFooterCount() {
@@ -160,19 +114,16 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
     return mHeaderCount;
   }
 
-  public int getPosition(int dataPosition) {
-    return dataPosition + getHeaderCount();
+  public int getItemViewIndex(int position) {
+    return isItemView(position) ? position - getHeaderCount() : -1;
   }
 
-  public boolean isBaseAdapterEnabled() {
+  public int getItemViewPosition(int index) {
+    return getHeaderCount() + index;
+  }
+
+  public boolean isBaseAdaptersEnabled() {
     return mIsBaseAdapterEnabled;
-  }
-
-  public void setBaseAdapterEnabled(boolean enabled) {
-    if (enabled != mIsBaseAdapterEnabled) {
-      mIsBaseAdapterEnabled = enabled;
-      notifyDataSetChanged();
-    }
   }
 
   public boolean isBlankView(int position) {
@@ -195,16 +146,11 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
     return new BlankHolder(new View(parent.getContext()));
   }
 
-  public void setBaseAdapter(RecyclerView.Adapter... baseAdapters) {
-    setBaseAdapter(baseAdapters, true);
-  }
-
-  protected int getAdapterSize() {
-    return mBaseAdapters == null ? 0 : mBaseAdapters.length;
-  }
-
-  protected int getChunkSize() {
-    return CHUNK_SIZE;
+  public void setBaseAdapterEnabled(boolean enabled) {
+    if (enabled != isBaseAdaptersEnabled()) {
+      mIsBaseAdapterEnabled = enabled;
+      notifyDataSetChanged();
+    }
   }
 
   protected int getFooterViewIndex(int position) {
@@ -246,20 +192,18 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
     return index;
   }
 
-  protected void setBaseAdapter(RecyclerView.Adapter[] baseAdapters, boolean notifyDataSetChanged) {
-    if (mBaseAdapters != null && mAdapterDataObserver != null) {
-      for (RecyclerView.Adapter adapter : mBaseAdapters) {
-        adapter.unregisterAdapterDataObserver(mAdapterDataObserver);
-      }
+  protected void setBaseAdapter(RecyclerView.Adapter baseAdapter, boolean notifyDataSetChanged) {
+    if (mBaseAdapter != null && mAdapterDataObserver != null) {
+      mBaseAdapter.unregisterAdapterDataObserver(mAdapterDataObserver);
     }
-    mBaseAdapters = baseAdapters;
+    mBaseAdapter = baseAdapter;
     mAdapterDataObserver = null;
-    if (mBaseAdapters != null) {
+    if (mBaseAdapter != null) {
       mAdapterDataObserver = new RecyclerView.AdapterDataObserver() {
         @Override
         public void onChanged() {
           super.onChanged();
-          if (mIsBaseAdapterEnabled) {
+          if (isBaseAdaptersEnabled()) {
             notifyDataSetChanged();
           }
         }
@@ -267,60 +211,55 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
         @Override
         public void onItemRangeChanged(int positionStart, int itemCount) {
           super.onItemRangeChanged(positionStart, itemCount);
-          if (mIsBaseAdapterEnabled) {
-            notifyItemRangeChanged(getPosition(positionStart), itemCount);
+          if (isBaseAdaptersEnabled()) {
+            notifyItemRangeChanged(getItemViewPosition(positionStart), itemCount);
           }
         }
 
         @Override
         public void onItemRangeInserted(int positionStart, int itemCount) {
           super.onItemRangeInserted(positionStart, itemCount);
-          if (mIsBaseAdapterEnabled) {
-            notifyItemRangeInserted(getPosition(positionStart), itemCount);
+          if (isBaseAdaptersEnabled()) {
+            notifyItemRangeInserted(getItemViewPosition(positionStart), itemCount);
           }
         }
 
         @Override
         public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
           super.onItemRangeMoved(fromPosition, toPosition, itemCount);
-          if (mIsBaseAdapterEnabled) {
-            notifyItemMoved(getPosition(fromPosition), getPosition(toPosition));
+          if (isBaseAdaptersEnabled()) {
+            notifyItemMoved(getItemViewPosition(fromPosition), getItemViewPosition(toPosition));
           }
         }
 
         @Override
         public void onItemRangeRemoved(int positionStart, int itemCount) {
           super.onItemRangeRemoved(positionStart, itemCount);
-          if (mIsBaseAdapterEnabled) {
-            notifyItemRangeRemoved(getPosition(positionStart), itemCount);
+          if (isBaseAdaptersEnabled()) {
+            notifyItemRangeRemoved(getItemViewPosition(positionStart), itemCount);
           }
         }
       };
-      for (RecyclerView.Adapter adapter : mBaseAdapters) {
-        adapter.registerAdapterDataObserver(mAdapterDataObserver);
-      }
+      mBaseAdapter.registerAdapterDataObserver(mAdapterDataObserver);
     }
     if (notifyDataSetChanged) {
       notifyDataSetChanged();
     }
   }
 
-  private int[] getBaseAdapterInfo(int dataPosition) {
-    if (mBaseAdapters == null) {
-      return new int[]{-1, -1};
-    }
-    for (int i = 0; i < mBaseAdapters.length; i++) {
-      if (dataPosition < mBaseAdapters[i].getItemCount()) {
-        return new int[]{i, dataPosition};
-      } else {
-        dataPosition -= mBaseAdapters[i].getItemCount();
-      }
-    }
-    return new int[]{-1, -1};
-  }
-
   public enum ItemViewType {
     BLANK(0), ITEM(1), HEADER(2), FOOTER(3);
+
+    protected static int CHUNK_SIZE = 2;
+
+    public static ItemViewType getValue(int value) {
+      for (ItemViewType type : values()) {
+        if (type.getValue() == value) {
+          return type;
+        }
+      }
+      return BLANK;
+    }
 
     private final int mValue;
 
@@ -330,81 +269,6 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
 
     public int getValue() {
       return mValue;
-    }
-  }
-
-  public static class BaseHolder extends RecyclerView.ViewHolder {
-
-    protected static View inflate(LayoutInflater inflater, ViewGroup parent, @LayoutRes int layoutId) {
-      return inflater.inflate(layoutId, parent, false);
-    }
-
-    public BaseHolder(View itemView) {
-      super(itemView);
-    }
-
-    public BaseHolder(LayoutInflater inflater, ViewGroup parent, @LayoutRes int layoutId) {
-      this(inflater, parent, layoutId, false);
-    }
-
-    public BaseHolder(LayoutInflater inflater, ViewGroup parent, @LayoutRes int layoutId, boolean isFillParent) {
-      super(inflate(inflater, parent, layoutId));
-      if (isFillParent && parent != null) {
-        getItemView().getLayoutParams().height = parent.getMeasuredHeight();
-      }
-    }
-
-    public View getItemView() {
-      return itemView;
-    }
-
-    public void setOnClickListener(View.OnClickListener listener) {
-      itemView.setOnClickListener(listener);
-    }
-  }
-
-  public static class BlankHolder extends BaseHolder {
-
-    public BlankHolder(View itemView) {
-      super(itemView);
-    }
-
-    public BlankHolder(LayoutInflater inflater, ViewGroup parent, @LayoutRes int layoutId) {
-      super(inflater, parent, layoutId);
-    }
-
-    public BlankHolder(LayoutInflater inflater, ViewGroup parent, @LayoutRes int layoutId, boolean isFillParent) {
-      super(inflater, parent, layoutId, isFillParent);
-    }
-  }
-
-  public static class FooterHolder extends BaseHolder {
-
-    public FooterHolder(View itemView) {
-      super(itemView);
-    }
-
-    public FooterHolder(LayoutInflater inflater, ViewGroup parent, @LayoutRes int layoutId) {
-      super(inflater, parent, layoutId);
-    }
-
-    public FooterHolder(LayoutInflater inflater, ViewGroup parent, @LayoutRes int layoutId, boolean isFillParent) {
-      super(inflater, parent, layoutId, isFillParent);
-    }
-  }
-
-  public static class HeaderHolder extends BaseHolder {
-
-    public HeaderHolder(View itemView) {
-      super(itemView);
-    }
-
-    public HeaderHolder(LayoutInflater inflater, ViewGroup parent, @LayoutRes int layoutId) {
-      super(inflater, parent, layoutId);
-    }
-
-    public HeaderHolder(LayoutInflater inflater, ViewGroup parent, @LayoutRes int layoutId, boolean isFillParent) {
-      super(inflater, parent, layoutId, isFillParent);
     }
   }
 }

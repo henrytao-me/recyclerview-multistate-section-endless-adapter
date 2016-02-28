@@ -27,7 +27,7 @@ import android.view.ViewGroup;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import me.henrytao.me.sample.R;
-import me.henrytao.recyclerview.EndlessAdapter.OnEndlessListener;
+import me.henrytao.recyclerview.old.EndlessAdapter.OnEndlessListener;
 import me.henrytao.sample.adapter.EndlessAdapter;
 import me.henrytao.sample.adapter.SimpleAdapter;
 
