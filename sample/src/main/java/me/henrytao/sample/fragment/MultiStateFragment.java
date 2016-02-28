@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 "Henry Tao <hi@henrytao.me>"
+ * Copyright 2016 "Henry Tao <hi@henrytao.me>"
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,24 +24,29 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.Random;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import me.henrytao.me.sample.R;
-import me.henrytao.sample.adapter.HeaderFooterAdapter;
+import me.henrytao.recyclerview.config.Visibility;
+import me.henrytao.sample.adapter.MultiStateAdapter;
 import me.henrytao.sample.adapter.SimpleAdapter;
 
-public class HeaderFooterRecyclerViewFragment extends Fragment {
+public class MultiStateFragment extends Fragment {
 
-  public static HeaderFooterRecyclerViewFragment newInstance() {
-    return new HeaderFooterRecyclerViewFragment();
+  public static MultiStateFragment newInstance() {
+    return new MultiStateFragment();
   }
 
   @Bind(android.R.id.list)
   RecyclerView vRecyclerView;
 
+  private MultiStateAdapter mAdapter;
+
   private SimpleAdapter mSimpleAdapter;
 
-  public HeaderFooterRecyclerViewFragment() {
+  public MultiStateFragment() {
   }
 
   @Override
@@ -63,10 +68,22 @@ public class HeaderFooterRecyclerViewFragment extends Fragment {
 
     mSimpleAdapter = new SimpleAdapter();
 
-    RecyclerView.Adapter adapter = new HeaderFooterAdapter(mSimpleAdapter);
+    mAdapter = new MultiStateAdapter(mSimpleAdapter, new MultiStateAdapter.OnItemClickListener() {
+      @Override
+      public void onClick(View view, int position) {
+        mAdapter.setVisibility(position, getRandomVisibility());
+      }
+    });
 
     vRecyclerView.setHasFixedSize(false);
     vRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-    vRecyclerView.setAdapter(adapter);
+    vRecyclerView.setAdapter(mAdapter);
+  }
+
+  @Visibility
+  private int getRandomVisibility() {
+    Random r = new Random();
+    int i = r.nextInt(100) % 2;
+    return i == 0 ? View.GONE : View.INVISIBLE;
   }
 }

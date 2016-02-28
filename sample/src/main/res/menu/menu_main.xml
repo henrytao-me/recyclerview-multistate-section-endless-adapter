@@ -35,4 +35,9 @@
     android:id="@+id/action_nested_wrapper_adapter"
     android:title="@string/text_nested_wrapper_adapter"
     app:showAsAction="never" />
+
+  <item
+    android:id="@+id/action_multi_state_adapter"
+    android:title="@string/text_multi_state_adapter"
+    app:showAsAction="never" />
 </menu>

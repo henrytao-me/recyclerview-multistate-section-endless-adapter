@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.henrytao.recyclerview;
+package me.henrytao.recyclerview.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
