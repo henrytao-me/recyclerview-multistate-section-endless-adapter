@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 "Henry Tao <hi@henrytao.me>"
+ * Copyright 2016 "Henry Tao <hi@henrytao.me>"
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,21 +29,20 @@ import butterknife.ButterKnife;
 import me.henrytao.me.sample.R;
 import me.henrytao.sample.adapter.HeaderFooterAdapter;
 import me.henrytao.sample.adapter.SimpleAdapter;
+import me.henrytao.sample.adapter.SpacingAdapter;
 
-public class HeaderFooterRecyclerViewFragment extends Fragment {
+public class NestedWrapperAdapterFragment extends Fragment {
 
-  public static HeaderFooterRecyclerViewFragment newInstance() {
-    return new HeaderFooterRecyclerViewFragment();
+  public static NestedWrapperAdapterFragment newInstance() {
+    return new NestedWrapperAdapterFragment();
   }
 
   @Bind(android.R.id.list)
   RecyclerView vRecyclerView;
 
-  private HeaderFooterAdapter mHeaderFooterAdapter;
-
   private SimpleAdapter mSimpleAdapter;
 
-  public HeaderFooterRecyclerViewFragment() {
+  public NestedWrapperAdapterFragment() {
   }
 
   @Override
@@ -62,10 +61,13 @@ public class HeaderFooterRecyclerViewFragment extends Fragment {
   @Override
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
+
     mSimpleAdapter = new SimpleAdapter();
-    mHeaderFooterAdapter = new HeaderFooterAdapter(mSimpleAdapter);
+
+    RecyclerView.Adapter adapter = new SpacingAdapter(new HeaderFooterAdapter(mSimpleAdapter));
+
     vRecyclerView.setHasFixedSize(false);
     vRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-    vRecyclerView.setAdapter(mHeaderFooterAdapter);
+    vRecyclerView.setAdapter(adapter);
   }
 }

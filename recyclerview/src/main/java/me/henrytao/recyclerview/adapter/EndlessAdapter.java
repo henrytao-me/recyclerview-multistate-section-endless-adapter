@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 "Henry Tao <hi@henrytao.me>"
+ * Copyright 2016 "Henry Tao <hi@henrytao.me>"
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.henrytao.recyclerview;
+package me.henrytao.recyclerview.adapter;
 
 /**
  * Created by henrytao on 8/16/15.
@@ -25,6 +25,8 @@ public interface EndlessAdapter {
 
   void setEndlessThreshold(int threshold);
 
+  void onNext(boolean force);
+
   void onNext();
 
   void setEndlessEnabled(boolean enabled);
@@ -33,6 +35,6 @@ public interface EndlessAdapter {
 
   interface OnEndlessListener {
 
-    void onReachThreshold();
+    void onReachThreshold(EndlessAdapter adapter);
   }
 }

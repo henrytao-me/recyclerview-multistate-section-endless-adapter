@@ -16,10 +16,5 @@
 
 <resources>
 
-  <item name="tag_loading" type="id" />
-  <item name="tag_empty" type="id" />
-  <item name="tag_error" type="id" />
-  <item name="tag_header" type="id" />
-  <item name="tag_footer" type="id" />
-
+  <item name="tag_position" type="id" />
 </resources>

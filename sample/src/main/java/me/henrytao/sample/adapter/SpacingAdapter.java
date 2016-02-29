@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 "Henry Tao <hi@henrytao.me>"
+ * Copyright 2016 "Henry Tao <hi@henrytao.me>"
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,23 +22,25 @@ import android.view.ViewGroup;
 
 import me.henrytao.me.sample.R;
 import me.henrytao.recyclerview.SimpleRecyclerViewAdapter;
+import me.henrytao.recyclerview.holder.FooterHolder;
+import me.henrytao.recyclerview.holder.HeaderHolder;
 
 /**
- * Created by henrytao on 8/16/15.
+ * Created by henrytao on 2/28/16.
  */
-public class HeaderAdapter extends SimpleRecyclerViewAdapter {
+public class SpacingAdapter extends SimpleRecyclerViewAdapter {
 
-  public HeaderAdapter(RecyclerView.Adapter baseAdapter) {
+  public SpacingAdapter(RecyclerView.Adapter baseAdapter) {
     super(baseAdapter);
   }
 
   @Override
   public RecyclerView.ViewHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent) {
-    return null;
+    return new FooterHolder(inflater, parent, R.layout.item_spacing);
   }
 
   @Override
   public RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent) {
-    return new HeaderHolder(inflater, parent, R.layout.holder_header);
+    return new HeaderHolder(inflater, parent, R.layout.item_spacing);
   }
 }

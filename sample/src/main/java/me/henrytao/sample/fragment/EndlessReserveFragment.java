@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 "Henry Tao <hi@henrytao.me>"
+ * Copyright 2016 "Henry Tao <hi@henrytao.me>"
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,23 +27,24 @@ import android.view.ViewGroup;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import me.henrytao.me.sample.R;
-import me.henrytao.sample.adapter.MergeAdapter;
+import me.henrytao.recyclerview.RecyclerViewAdapter;
+import me.henrytao.sample.adapter.EndlessAdapter;
 import me.henrytao.sample.adapter.SimpleAdapter;
 
-public class MergeAdapterRecyclerViewFragment extends Fragment {
+public class EndlessReserveFragment extends Fragment {
 
-  public static MergeAdapterRecyclerViewFragment newInstance() {
-    return new MergeAdapterRecyclerViewFragment();
+  public static EndlessReserveFragment newInstance() {
+    return new EndlessReserveFragment();
   }
 
   @Bind(android.R.id.list)
   RecyclerView vRecyclerView;
 
-  private MergeAdapter mMultipleHeaderAdapter;
+  private RecyclerViewAdapter mEndlessAdapter;
 
-  private SimpleAdapter[] mSimpleAdapters;
+  private SimpleAdapter mSimpleAdapter;
 
-  public MergeAdapterRecyclerViewFragment() {
+  public EndlessReserveFragment() {
   }
 
   @Override
@@ -62,13 +63,24 @@ public class MergeAdapterRecyclerViewFragment extends Fragment {
   @Override
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-    mSimpleAdapters = new SimpleAdapter[4];
-    for (int i = 0; i < mSimpleAdapters.length; i++) {
-      mSimpleAdapters[i] = new SimpleAdapter(5 + i * 10);
-    }
-    mMultipleHeaderAdapter = new MergeAdapter(mSimpleAdapters);
+
+    mSimpleAdapter = new SimpleAdapter();
+
+    mEndlessAdapter = new EndlessAdapter(mSimpleAdapter, null);
+    mEndlessAdapter.setOnEndlessListener(new me.henrytao.recyclerview.adapter.EndlessAdapter.OnEndlessListener() {
+      @Override
+      public void onReachThreshold(me.henrytao.recyclerview.adapter.EndlessAdapter adapter) {
+        adapter.onNext();
+        mSimpleAdapter.addMoreItems(10);
+        mSimpleAdapter.notifyDataSetChanged();
+      }
+    });
+
+    LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+    layoutManager.setReverseLayout(true);
+
     vRecyclerView.setHasFixedSize(false);
-    vRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-    vRecyclerView.setAdapter(mMultipleHeaderAdapter);
+    vRecyclerView.setLayoutManager(layoutManager);
+    vRecyclerView.setAdapter(mEndlessAdapter);
   }
 }

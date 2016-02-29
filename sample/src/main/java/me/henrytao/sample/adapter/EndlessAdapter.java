@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 "Henry Tao <hi@henrytao.me>"
+ * Copyright 2016 "Henry Tao <hi@henrytao.me>"
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,36 +18,58 @@ package me.henrytao.sample.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
-import me.henrytao.recyclerview.RecyclerViewAdapter;
+import me.henrytao.me.sample.R;
+import me.henrytao.recyclerview.SimpleRecyclerViewAdapter;
+import me.henrytao.recyclerview.holder.FooterHolder;
+import me.henrytao.recyclerview.holder.HeaderHolder;
 
 /**
  * Created by henrytao on 8/16/15.
  */
-public class EndlessAdapter extends RecyclerViewAdapter {
+public class EndlessAdapter extends SimpleRecyclerViewAdapter {
 
-  public EndlessAdapter(RecyclerView.Adapter baseAdapter) {
-    super(0, 0, baseAdapter);
+  private final OnItemClickListener mOnItemClickListener;
+
+  public EndlessAdapter(RecyclerView.Adapter baseAdapter, OnItemClickListener onItemClickListener) {
+    super(baseAdapter);
+    mOnItemClickListener = onItemClickListener;
   }
 
   @Override
-  public void onBindFooterViewHolder(RecyclerView.ViewHolder holder, int index) {
-
+  public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    super.onBindViewHolder(holder, position);
+    holder.itemView.setTag(R.id.tag_position, position);
   }
 
   @Override
-  public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder, int index) {
-
+  public RecyclerView.ViewHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent) {
+    return new FooterHolder(inflater, parent, R.layout.holder_footer);
   }
 
   @Override
-  public RecyclerView.ViewHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent, int index) {
-    return null;
+  public RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent) {
+    return new HeaderHolder(inflater, parent, R.layout.holder_header);
   }
 
   @Override
-  public RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent, int index) {
-    return null;
+  public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    RecyclerView.ViewHolder viewHolder = super.onCreateViewHolder(parent, viewType);
+    viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        if (mOnItemClickListener != null) {
+          mOnItemClickListener.onClick(view, (int) view.getTag(R.id.tag_position));
+        }
+      }
+    });
+    return viewHolder;
+  }
+
+  public interface OnItemClickListener {
+
+    void onClick(View view, int position);
   }
 }

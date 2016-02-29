@@ -18,7 +18,7 @@ package me.henrytao.sample.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,25 +27,21 @@ import android.view.ViewGroup;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import me.henrytao.me.sample.R;
-import me.henrytao.sample.adapter.HeaderAdapter;
+import me.henrytao.sample.adapter.HeaderFooterAdapter;
 import me.henrytao.sample.adapter.SimpleAdapter;
 
-public class HeaderGridRecyclerViewFragment extends Fragment {
+public class HeaderFooterFragment extends Fragment {
 
-  public static HeaderGridRecyclerViewFragment newInstance() {
-    return new HeaderGridRecyclerViewFragment();
+  public static HeaderFooterFragment newInstance() {
+    return new HeaderFooterFragment();
   }
 
   @Bind(android.R.id.list)
   RecyclerView vRecyclerView;
 
-  private GridLayoutManager mGridLayoutManager;
-
-  private HeaderAdapter mHeaderAdapter;
-
   private SimpleAdapter mSimpleAdapter;
 
-  public HeaderGridRecyclerViewFragment() {
+  public HeaderFooterFragment() {
   }
 
   @Override
@@ -64,17 +60,13 @@ public class HeaderGridRecyclerViewFragment extends Fragment {
   @Override
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
+
     mSimpleAdapter = new SimpleAdapter();
-    mHeaderAdapter = new HeaderAdapter(mSimpleAdapter);
-    mGridLayoutManager = new GridLayoutManager(getActivity(), 2);
-    mGridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-      @Override
-      public int getSpanSize(int position) {
-        return mHeaderAdapter.isHeaderView(position) ? mGridLayoutManager.getSpanCount() : 1;
-      }
-    });
+
+    RecyclerView.Adapter adapter = new HeaderFooterAdapter(mSimpleAdapter);
+
     vRecyclerView.setHasFixedSize(false);
-    vRecyclerView.setLayoutManager(mGridLayoutManager);
-    vRecyclerView.setAdapter(mHeaderAdapter);
+    vRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+    vRecyclerView.setAdapter(adapter);
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 "Henry Tao <hi@henrytao.me>"
+ * Copyright 2016 "Henry Tao <hi@henrytao.me>"
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,23 +24,33 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.Random;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import me.henrytao.me.sample.R;
+import me.henrytao.recyclerview.RecyclerViewAdapter;
+import me.henrytao.recyclerview.adapter.MultiStateAdapter.OnVisibilityChangedListener;
+import me.henrytao.recyclerview.config.Constants;
+import me.henrytao.recyclerview.config.Visibility;
+import me.henrytao.sample.adapter.MultiStateAdapter;
 import me.henrytao.sample.adapter.SimpleAdapter;
+import me.henrytao.sample.util.Utils;
 
-public class SimpleRecyclerViewFragment extends Fragment {
+public class MultiStateFragment extends Fragment {
 
-  public static SimpleRecyclerViewFragment newInstance() {
-    return new SimpleRecyclerViewFragment();
+  public static MultiStateFragment newInstance() {
+    return new MultiStateFragment();
   }
 
   @Bind(android.R.id.list)
   RecyclerView vRecyclerView;
 
+  private RecyclerViewAdapter mMultiStateAdapter;
+
   private SimpleAdapter mSimpleAdapter;
 
-  public SimpleRecyclerViewFragment() {
+  public MultiStateFragment() {
   }
 
   @Override
@@ -59,9 +69,35 @@ public class SimpleRecyclerViewFragment extends Fragment {
   @Override
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
+
     mSimpleAdapter = new SimpleAdapter();
+
+    mMultiStateAdapter = new MultiStateAdapter(mSimpleAdapter, new MultiStateAdapter.OnItemClickListener() {
+      @Override
+      public void onClick(View view, int position) {
+        mMultiStateAdapter.setVisibility(position, getRandomVisibility());
+      }
+    });
+
     vRecyclerView.setHasFixedSize(false);
     vRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-    vRecyclerView.setAdapter(mSimpleAdapter);
+    vRecyclerView.setAdapter(mMultiStateAdapter);
+
+    mMultiStateAdapter.setVisibility(0, View.GONE, Constants.Type.FOOTER);
+
+    mMultiStateAdapter.addOnVisibilityChanged(new OnVisibilityChangedListener() {
+      @Override
+      public void onVisibilityChanged(me.henrytao.recyclerview.adapter.MultiStateAdapter adapter, int position,
+          @Visibility int visibility) {
+        Utils.log("onVisibilityChanged | %d | %d", position, visibility);
+      }
+    });
+  }
+
+  @Visibility
+  private int getRandomVisibility() {
+    Random r = new Random();
+    int i = r.nextInt(100) % 2;
+    return i == 0 ? View.GONE : View.INVISIBLE;
   }
 }

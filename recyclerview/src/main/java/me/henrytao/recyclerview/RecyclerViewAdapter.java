@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 "Henry Tao <hi@henrytao.me>"
+ * Copyright 2016 "Henry Tao <hi@henrytao.me>"
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,25 +21,37 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-/**
- * Created by henrytao on 8/16/15.
- */
-public abstract class RecyclerViewAdapter extends BaseAdapter implements EndlessAdapter, MultiStateAdapter {
+import me.henrytao.recyclerview.adapter.BaseAdapter;
+import me.henrytao.recyclerview.adapter.EndlessAdapter;
+import me.henrytao.recyclerview.adapter.MultiStateAdapter;
+import me.henrytao.recyclerview.config.Constants;
+import me.henrytao.recyclerview.config.Visibility;
 
-  private boolean mAppendingData = false;
+/**
+ * Created by henrytao on 2/28/16.
+ */
+public abstract class RecyclerViewAdapter extends BaseAdapter implements MultiStateAdapter, EndlessAdapter {
 
   private boolean mEndlessEnabled = true;
 
-  private int mEndlessThreshold = 0;
+  private int mEndlessThreshold;
+
+  private Map<Integer, Integer> mFooterStates = new HashMap<>();
+
+  private Map<Integer, Integer> mHeaderStates = new HashMap<>();
 
   private OnEndlessListener mOnEndlessListener;
 
-  private Map<Integer, ViewState> mViewState = new HashMap<>();
+  private List<OnVisibilityChangedListener> mOnVisibilityChangedListeners = new ArrayList<>();
 
-  public RecyclerViewAdapter(int headerCount, int footerCount, RecyclerView.Adapter... baseAdapter) {
+  private boolean mReachedThreshold;
+
+  public RecyclerViewAdapter(int headerCount, int footerCount, RecyclerView.Adapter baseAdapter) {
     super(headerCount, footerCount, baseAdapter);
   }
 
@@ -47,8 +59,9 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements Endless
     super(baseAdapter);
   }
 
-  public RecyclerViewAdapter() {
-    super();
+  @Override
+  public void addOnVisibilityChanged(OnVisibilityChangedListener onVisibilityChangedListener) {
+    mOnVisibilityChangedListeners.add(onVisibilityChangedListener);
   }
 
   @Override
@@ -56,9 +69,6 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements Endless
     return mEndlessThreshold;
   }
 
-  /**
-   * Fetching next page listener will be called if recyclerView is scrolled to threshold item (count from bottom)
-   */
   @Override
   public void setEndlessThreshold(int threshold) {
     mEndlessThreshold = threshold;
@@ -66,83 +76,55 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements Endless
 
   @Override
   public int getItemViewType(int position) {
-    ItemViewType itemViewType = null;
-    int index = -1;
-    if (isFooterView(position)) {
-      itemViewType = ItemViewType.FOOTER;
-      index = getFooterViewIndex(position);
-    } else if (isHeaderView(position)) {
-      itemViewType = ItemViewType.HEADER;
-      index = getHeaderViewIndex(position);
-    }
-    if (itemViewType != null) {
-      for (ViewState viewState : mViewState.values()) {
-        if (viewState.isMatch(itemViewType, index) && viewState.getVisibility() == View.GONE) {
-          return ItemViewType.BLANK.getValue() << (getChunkSize() + getAdapterSize());
-        }
-      }
-    }
-    return super.getItemViewType(position);
+    return (getVisibility(position, Constants.Type.HEADER) == View.GONE
+        || getVisibility(getItemCount() - position - 1, Constants.Type.FOOTER) == View.GONE) ?
+        ItemViewType.BLANK.getValue() : super.getItemViewType(position);
   }
 
   @Override
-  public void hideViewState(int tag) {
-    setViewStateVisibility(tag, View.GONE);
+  public int getVisibility(int position) {
+    @Visibility int visibility = getVisibility(getPosition(position, Constants.Type.HEADER), Constants.Type.HEADER);
+    return visibility != View.VISIBLE ? visibility : getVisibility(getPosition(position, Constants.Type.FOOTER), Constants.Type.FOOTER);
   }
 
   @Override
-  public boolean isViewStateHidden(int tag) {
-    if (mViewState.containsKey(tag)) {
-      return mViewState.get(tag).getVisibility() == View.GONE;
+  public int getVisibility(int index, Constants.Type type) {
+    Map<Integer, Integer> states = getStates(type);
+    if (states.containsKey(index)) {
+      int visibility = states.get(index);
+      return visibility == View.GONE ? View.GONE : (visibility == View.INVISIBLE ? View.INVISIBLE : View.VISIBLE);
     }
-    return true;
-  }
-
-  @Override
-  public boolean isViewStateShowed(int tag) {
-    if (mViewState.containsKey(tag)) {
-      return mViewState.get(tag).getVisibility() == View.VISIBLE;
-    }
-    return false;
+    return View.VISIBLE;
   }
 
   @Override
   public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-    super.onBindViewHolder(holder, position);
-    if (mEndlessEnabled && !mAppendingData && mOnEndlessListener != null
-        && position >= getItemCount() - 1 - getEndlessThreshold()) {
-      mAppendingData = true;
-      onReachThreshold();
+    try {
+      holder.itemView.setVisibility(getVisibility(position) == View.VISIBLE ? View.VISIBLE : View.INVISIBLE);
+      super.onBindViewHolder(holder, position);
+    } catch (ClassCastException ignore) {
+    }
+
+    if (isEndlessEnabled() &&
+        mOnEndlessListener != null &&
+        !mReachedThreshold &&
+        (position >= getItemCount() - 1 - getEndlessThreshold())) {
+      mReachedThreshold = true;
+      new OnReachThresholdTask(this, mOnEndlessListener).execute();
     }
   }
 
-  /**
-   * This method will tell recyclerView to fetch next page
-   */
   @Override
   public void onNext() {
-    mAppendingData = false;
+    onNext(false);
   }
 
   @Override
-  public void onViewStateVisibilityChange(int tag, ItemViewType itemViewType, int index, @Visibility int visibility,
-      int position) {
-    notifyItemChanged(position);
-  }
-
-  @Override
-  public void setEndlessEnabled(boolean enabled) {
-    mEndlessEnabled = enabled;
-  }
-
-  @Override
-  public void setFooterViewState(int tag, int index, @Visibility int initVisibility) {
-    setViewState(tag, ItemViewType.FOOTER, index, initVisibility);
-  }
-
-  @Override
-  public void setHeaderViewState(int tag, int index, @Visibility int initVisibility) {
-    setViewState(tag, ItemViewType.HEADER, index, initVisibility);
+  public void onNext(boolean force) {
+    mReachedThreshold = false;
+    if (force && isEndlessEnabled()) {
+      notifyItemChanged(getItemCount() - 1 - getEndlessThreshold());
+    }
   }
 
   @Override
@@ -151,52 +133,52 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements Endless
   }
 
   @Override
-  public void setViewState(int tag, ItemViewType itemViewType, int index, @Visibility int initVisibility) {
-    if ((itemViewType == ItemViewType.HEADER && index < getHeaderCount()) ||
-        (itemViewType == ItemViewType.FOOTER && index < getFooterCount())) {
-      mViewState.put(tag, new ViewState(itemViewType, index, initVisibility));
-    }
+  public void setVisibility(int position, @Visibility int visibility) {
+    setVisibility(position, visibility, Constants.Type.HEADER);
   }
 
   @Override
-  public void setViewStateVisibility(int tag, @Visibility int visibility) {
-    if (mViewState.containsKey(tag)) {
-      ViewState viewState = mViewState.get(tag);
-      if ((viewState.getVisibility() == View.GONE && visibility == View.GONE) ||
-          (viewState.getVisibility() == View.VISIBLE && visibility == View.VISIBLE)) {
-        return;
-      }
-      viewState.setVisibility(visibility);
-      int position = -1;
-      if (viewState.getItemViewType() == ItemViewType.FOOTER) {
-        position = getFooterViewPosition(viewState.getIndex());
-      } else if (viewState.getItemViewType() == ItemViewType.HEADER) {
-        position = getHeaderViewPosition(viewState.getIndex());
-      }
-      if (position >= 0 && position < getItemCount()) {
-        onViewStateVisibilityChange(tag, viewState.getItemViewType(), viewState.getIndex(), visibility, position);
-      }
+  public void setVisibility(int index, @Visibility int visibility, Constants.Type type) {
+    if (getVisibility(index, type) == visibility) {
+      return;
     }
+    getStates(type).put(index, visibility);
+    notifyItemChanged(getPosition(index, type));
+    onVisibilityChanged(index, visibility, type);
+  }
+
+  public boolean isEndlessEnabled() {
+    return mEndlessEnabled;
   }
 
   @Override
-  public void showViewState(int tag) {
-    setViewStateVisibility(tag, View.VISIBLE);
+  public void setEndlessEnabled(boolean enabled) {
+    mEndlessEnabled = enabled;
   }
 
-  public boolean isAppendingData() {
-    return mAppendingData;
+  private int getPosition(int index, Constants.Type type) {
+    return type == Constants.Type.HEADER ? index : getItemCount() - index - 1;
   }
 
-  protected void onReachThreshold() {
-    new OnReachThresholdTask(mOnEndlessListener).execute();
+  private Map<Integer, Integer> getStates(Constants.Type type) {
+    return type == Constants.Type.HEADER ? mHeaderStates : mFooterStates;
+  }
+
+  private void onVisibilityChanged(int index, @Visibility int visibility, Constants.Type type) {
+    int n = mOnVisibilityChangedListeners.size();
+    for (int i = 0; i < n; i++) {
+      mOnVisibilityChangedListeners.get(i).onVisibilityChanged(this, getPosition(index, type), visibility);
+    }
   }
 
   private static class OnReachThresholdTask extends AsyncTask<Void, Void, Void> {
 
-    WeakReference<OnEndlessListener> mOnEndlessListenerWeakReference;
+    private final WeakReference<EndlessAdapter> mEndlessAdapterWeakReference;
 
-    public OnReachThresholdTask(OnEndlessListener onEndlessListener) {
+    private final WeakReference<OnEndlessListener> mOnEndlessListenerWeakReference;
+
+    public OnReachThresholdTask(EndlessAdapter adapter, OnEndlessListener onEndlessListener) {
+      mEndlessAdapterWeakReference = new WeakReference<>(adapter);
       mOnEndlessListenerWeakReference = new WeakReference<>(onEndlessListener);
     }
 
@@ -207,45 +189,11 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements Endless
 
     @Override
     protected void onPostExecute(Void aVoid) {
+      EndlessAdapter adapter = mEndlessAdapterWeakReference.get();
       OnEndlessListener onEndlessListener = mOnEndlessListenerWeakReference.get();
-      if (onEndlessListener != null) {
-        onEndlessListener.onReachThreshold();
+      if (adapter != null && onEndlessListener != null) {
+        onEndlessListener.onReachThreshold(adapter);
       }
-    }
-  }
-
-  public static class ViewState {
-
-    private int mIndex;
-
-    private ItemViewType mItemViewType;
-
-    private int mVisibility;
-
-    public ViewState(ItemViewType itemViewType, int index, int initVisibility) {
-      mItemViewType = itemViewType;
-      mIndex = index;
-      mVisibility = initVisibility;
-    }
-
-    public int getIndex() {
-      return mIndex;
-    }
-
-    public ItemViewType getItemViewType() {
-      return mItemViewType;
-    }
-
-    public int getVisibility() {
-      return mVisibility;
-    }
-
-    public void setVisibility(int visibility) {
-      mVisibility = visibility;
-    }
-
-    public boolean isMatch(ItemViewType itemViewType, int index) {
-      return itemViewType == mItemViewType && index == mIndex;
     }
   }
 }

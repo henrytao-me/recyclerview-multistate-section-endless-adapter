@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 "Henry Tao <hi@henrytao.me>"
+ * Copyright 2016 "Henry Tao <hi@henrytao.me>"
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,23 +27,24 @@ import android.view.ViewGroup;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import me.henrytao.me.sample.R;
-import me.henrytao.sample.adapter.MaterialAdapter;
+import me.henrytao.recyclerview.RecyclerViewAdapter;
+import me.henrytao.sample.adapter.EndlessAdapter;
 import me.henrytao.sample.adapter.SimpleAdapter;
 
-public class MaterialRecyclerViewFragment extends Fragment {
+public class EndlessFragment extends Fragment {
 
-  public static MaterialRecyclerViewFragment newInstance() {
-    return new MaterialRecyclerViewFragment();
+  public static EndlessFragment newInstance() {
+    return new EndlessFragment();
   }
 
   @Bind(android.R.id.list)
   RecyclerView vRecyclerView;
 
-  private MaterialAdapter mMaterialAdapter;
+  private RecyclerViewAdapter mEndlessAdapter;
 
   private SimpleAdapter mSimpleAdapter;
 
-  public MaterialRecyclerViewFragment() {
+  public EndlessFragment() {
   }
 
   @Override
@@ -62,10 +63,21 @@ public class MaterialRecyclerViewFragment extends Fragment {
   @Override
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
+
     mSimpleAdapter = new SimpleAdapter();
-    mMaterialAdapter = new MaterialAdapter(mSimpleAdapter);
+
+    mEndlessAdapter = new EndlessAdapter(mSimpleAdapter, null);
+    mEndlessAdapter.setOnEndlessListener(new me.henrytao.recyclerview.adapter.EndlessAdapter.OnEndlessListener() {
+      @Override
+      public void onReachThreshold(me.henrytao.recyclerview.adapter.EndlessAdapter adapter) {
+        adapter.onNext();
+        mSimpleAdapter.addMoreItems(10);
+        mSimpleAdapter.notifyDataSetChanged();
+      }
+    });
+
     vRecyclerView.setHasFixedSize(false);
     vRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-    vRecyclerView.setAdapter(mMaterialAdapter);
+    vRecyclerView.setAdapter(mEndlessAdapter);
   }
 }
