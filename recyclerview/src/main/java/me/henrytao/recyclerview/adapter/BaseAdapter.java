@@ -44,7 +44,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
 
   private RecyclerView.Adapter mBaseAdapter;
 
-  private boolean mIsBaseAdapterEnabled = true;
+  private boolean mBaseAdapterEnabled = true;
 
   public BaseAdapter(int headerCount, int footerCount, RecyclerView.Adapter baseAdapter) {
     mHeaderCount = headerCount;
@@ -106,7 +106,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
   }
 
   public int getBaseItemCount() {
-    if (mBaseAdapter == null || !isBaseAdaptersEnabled()) {
+    if (mBaseAdapter == null || !isBaseAdapterEnabled()) {
       return 0;
     }
     return mBaseAdapter.getItemCount();
@@ -128,8 +128,15 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
     return getHeaderCount() + index;
   }
 
-  public boolean isBaseAdaptersEnabled() {
-    return mIsBaseAdapterEnabled;
+  public boolean isBaseAdapterEnabled() {
+    return mBaseAdapterEnabled;
+  }
+
+  public void setBaseAdapterEnabled(boolean enabled) {
+    if (enabled != isBaseAdapterEnabled()) {
+      mBaseAdapterEnabled = enabled;
+      notifyDataSetChanged();
+    }
   }
 
   public boolean isBlankView(int position) {
@@ -150,13 +157,6 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
 
   public RecyclerView.ViewHolder onCreateBlankViewHolder(LayoutInflater inflater, ViewGroup parent) {
     return new BlankHolder(new View(parent.getContext()));
-  }
-
-  public void setBaseAdapterEnabled(boolean enabled) {
-    if (enabled != isBaseAdaptersEnabled()) {
-      mIsBaseAdapterEnabled = enabled;
-      notifyDataSetChanged();
-    }
   }
 
   protected int getFooterViewIndex(int position) {
@@ -209,7 +209,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
         @Override
         public void onChanged() {
           super.onChanged();
-          if (isBaseAdaptersEnabled()) {
+          if (isBaseAdapterEnabled()) {
             notifyDataSetChanged();
           }
         }
@@ -217,7 +217,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
         @Override
         public void onItemRangeChanged(int positionStart, int itemCount) {
           super.onItemRangeChanged(positionStart, itemCount);
-          if (isBaseAdaptersEnabled()) {
+          if (isBaseAdapterEnabled()) {
             notifyItemRangeChanged(getItemViewPosition(positionStart), itemCount);
           }
         }
@@ -225,7 +225,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
         @Override
         public void onItemRangeInserted(int positionStart, int itemCount) {
           super.onItemRangeInserted(positionStart, itemCount);
-          if (isBaseAdaptersEnabled()) {
+          if (isBaseAdapterEnabled()) {
             notifyItemRangeInserted(getItemViewPosition(positionStart), itemCount);
           }
         }
@@ -233,7 +233,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
         @Override
         public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
           super.onItemRangeMoved(fromPosition, toPosition, itemCount);
-          if (isBaseAdaptersEnabled()) {
+          if (isBaseAdapterEnabled()) {
             notifyItemMoved(getItemViewPosition(fromPosition), getItemViewPosition(toPosition));
           }
         }
@@ -241,7 +241,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
         @Override
         public void onItemRangeRemoved(int positionStart, int itemCount) {
           super.onItemRangeRemoved(positionStart, itemCount);
-          if (isBaseAdaptersEnabled()) {
+          if (isBaseAdapterEnabled()) {
             notifyItemRangeRemoved(getItemViewPosition(positionStart), itemCount);
           }
         }

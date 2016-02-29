@@ -24,33 +24,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.Random;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import me.henrytao.me.sample.R;
 import me.henrytao.recyclerview.RecyclerViewAdapter;
-import me.henrytao.recyclerview.adapter.MultiStateAdapter.OnVisibilityChangedListener;
-import me.henrytao.recyclerview.config.Constants;
-import me.henrytao.recyclerview.config.Visibility;
-import me.henrytao.sample.adapter.MultiStateAdapter;
+import me.henrytao.sample.adapter.EndlessAdapter;
 import me.henrytao.sample.adapter.SimpleAdapter;
-import me.henrytao.sample.util.Utils;
 
-public class MultiStateFragment extends Fragment {
+public class EndlessFragment extends Fragment {
 
-  public static MultiStateFragment newInstance() {
-    return new MultiStateFragment();
+  public static EndlessFragment newInstance() {
+    return new EndlessFragment();
   }
 
   @Bind(android.R.id.list)
   RecyclerView vRecyclerView;
 
-  private RecyclerViewAdapter mMultiStateAdapter;
+  private RecyclerViewAdapter mEndlessAdapter;
 
   private SimpleAdapter mSimpleAdapter;
 
-  public MultiStateFragment() {
+  public EndlessFragment() {
   }
 
   @Override
@@ -72,32 +66,18 @@ public class MultiStateFragment extends Fragment {
 
     mSimpleAdapter = new SimpleAdapter();
 
-    mMultiStateAdapter = new MultiStateAdapter(mSimpleAdapter, new MultiStateAdapter.OnItemClickListener() {
+    mEndlessAdapter = new EndlessAdapter(mSimpleAdapter, null);
+    mEndlessAdapter.setOnEndlessListener(new me.henrytao.recyclerview.adapter.EndlessAdapter.OnEndlessListener() {
       @Override
-      public void onClick(View view, int position) {
-        mMultiStateAdapter.setVisibility(position, getRandomVisibility());
+      public void onReachThreshold(me.henrytao.recyclerview.adapter.EndlessAdapter adapter) {
+        adapter.onNext();
+        mSimpleAdapter.addMoreItems(10);
+        mSimpleAdapter.notifyDataSetChanged();
       }
     });
 
     vRecyclerView.setHasFixedSize(false);
     vRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-    vRecyclerView.setAdapter(mMultiStateAdapter);
-
-    mMultiStateAdapter.setVisibility(0, View.GONE, Constants.Type.FOOTER);
-
-    mMultiStateAdapter.addOnVisibilityChanged(new OnVisibilityChangedListener() {
-      @Override
-      public void onVisibilityChanged(me.henrytao.recyclerview.adapter.MultiStateAdapter adapter, int position,
-          @Visibility int visibility) {
-        Utils.log("onVisibilityChanged | %d | %d", position, visibility);
-      }
-    });
-  }
-
-  @Visibility
-  private int getRandomVisibility() {
-    Random r = new Random();
-    int i = r.nextInt(100) % 2;
-    return i == 0 ? View.GONE : View.INVISIBLE;
+    vRecyclerView.setAdapter(mEndlessAdapter);
   }
 }

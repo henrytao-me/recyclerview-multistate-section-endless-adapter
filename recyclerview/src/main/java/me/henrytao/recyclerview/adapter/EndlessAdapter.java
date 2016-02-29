@@ -25,6 +25,8 @@ public interface EndlessAdapter {
 
   void setEndlessThreshold(int threshold);
 
+  void onNext(boolean force);
+
   void onNext();
 
   void setEndlessEnabled(boolean enabled);
@@ -33,6 +35,6 @@ public interface EndlessAdapter {
 
   interface OnEndlessListener {
 
-    void onReachThreshold();
+    void onReachThreshold(EndlessAdapter adapter);
   }
 }

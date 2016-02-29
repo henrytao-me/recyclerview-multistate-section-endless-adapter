@@ -16,15 +16,18 @@
 
 package me.henrytao.recyclerview;
 
+import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import me.henrytao.recyclerview.adapter.BaseAdapter;
+import me.henrytao.recyclerview.adapter.EndlessAdapter;
 import me.henrytao.recyclerview.adapter.MultiStateAdapter;
 import me.henrytao.recyclerview.config.Constants;
 import me.henrytao.recyclerview.config.Visibility;
@@ -32,13 +35,21 @@ import me.henrytao.recyclerview.config.Visibility;
 /**
  * Created by henrytao on 2/28/16.
  */
-public abstract class RecyclerViewAdapter extends BaseAdapter implements MultiStateAdapter {
+public abstract class RecyclerViewAdapter extends BaseAdapter implements MultiStateAdapter, EndlessAdapter {
+
+  private boolean mEndlessEnabled = true;
+
+  private int mEndlessThreshold;
 
   private Map<Integer, Integer> mFooterStates = new HashMap<>();
 
   private Map<Integer, Integer> mHeaderStates = new HashMap<>();
 
+  private OnEndlessListener mOnEndlessListener;
+
   private List<OnVisibilityChangedListener> mOnVisibilityChangedListeners = new ArrayList<>();
+
+  private boolean mReachedThreshold;
 
   public RecyclerViewAdapter(int headerCount, int footerCount, RecyclerView.Adapter baseAdapter) {
     super(headerCount, footerCount, baseAdapter);
@@ -51,6 +62,16 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements MultiSt
   @Override
   public void addOnVisibilityChanged(OnVisibilityChangedListener onVisibilityChangedListener) {
     mOnVisibilityChangedListeners.add(onVisibilityChangedListener);
+  }
+
+  @Override
+  public int getEndlessThreshold() {
+    return mEndlessThreshold;
+  }
+
+  @Override
+  public void setEndlessThreshold(int threshold) {
+    mEndlessThreshold = threshold;
   }
 
   @Override
@@ -83,6 +104,32 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements MultiSt
       super.onBindViewHolder(holder, position);
     } catch (ClassCastException ignore) {
     }
+
+    if (isEndlessEnabled() &&
+        mOnEndlessListener != null &&
+        !mReachedThreshold &&
+        (position >= getItemCount() - 1 - getEndlessThreshold())) {
+      mReachedThreshold = true;
+      new OnReachThresholdTask(this, mOnEndlessListener).execute();
+    }
+  }
+
+  @Override
+  public void onNext() {
+    onNext(false);
+  }
+
+  @Override
+  public void onNext(boolean force) {
+    mReachedThreshold = false;
+    if (force && isEndlessEnabled()) {
+      notifyItemChanged(getItemCount() - 1 - getEndlessThreshold());
+    }
+  }
+
+  @Override
+  public void setOnEndlessListener(OnEndlessListener listener) {
+    mOnEndlessListener = listener;
   }
 
   @Override
@@ -100,6 +147,15 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements MultiSt
     onVisibilityChanged(index, visibility, type);
   }
 
+  public boolean isEndlessEnabled() {
+    return mEndlessEnabled;
+  }
+
+  @Override
+  public void setEndlessEnabled(boolean enabled) {
+    mEndlessEnabled = enabled;
+  }
+
   private int getPosition(int index, Constants.Type type) {
     return type == Constants.Type.HEADER ? index : getItemCount() - index - 1;
   }
@@ -112,6 +168,32 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements MultiSt
     int n = mOnVisibilityChangedListeners.size();
     for (int i = 0; i < n; i++) {
       mOnVisibilityChangedListeners.get(i).onVisibilityChanged(this, getPosition(index, type), visibility);
+    }
+  }
+
+  private static class OnReachThresholdTask extends AsyncTask<Void, Void, Void> {
+
+    private final WeakReference<EndlessAdapter> mEndlessAdapterWeakReference;
+
+    private final WeakReference<OnEndlessListener> mOnEndlessListenerWeakReference;
+
+    public OnReachThresholdTask(EndlessAdapter adapter, OnEndlessListener onEndlessListener) {
+      mEndlessAdapterWeakReference = new WeakReference<>(adapter);
+      mOnEndlessListenerWeakReference = new WeakReference<>(onEndlessListener);
+    }
+
+    @Override
+    protected Void doInBackground(Void... params) {
+      return null;
+    }
+
+    @Override
+    protected void onPostExecute(Void aVoid) {
+      EndlessAdapter adapter = mEndlessAdapterWeakReference.get();
+      OnEndlessListener onEndlessListener = mOnEndlessListenerWeakReference.get();
+      if (adapter != null && onEndlessListener != null) {
+        onEndlessListener.onReachThreshold(adapter);
+      }
     }
   }
 }

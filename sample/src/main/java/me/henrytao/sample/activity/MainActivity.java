@@ -25,6 +25,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import me.henrytao.me.sample.R;
+import me.henrytao.sample.fragment.EndlessFragment;
+import me.henrytao.sample.fragment.EndlessReserveFragment;
 import me.henrytao.sample.fragment.HeaderFooterFragment;
 import me.henrytao.sample.fragment.InfoFragment;
 import me.henrytao.sample.fragment.MultiStateFragment;
@@ -73,6 +75,14 @@ public class MainActivity extends AppCompatActivity {
       case R.id.action_multi_state_adapter:
         setTitle(R.string.text_multi_state_adapter);
         fragment = MultiStateFragment.newInstance();
+        break;
+      case R.id.action_endless_adapter:
+        setTitle(R.string.text_endless_adapter);
+        fragment = EndlessFragment.newInstance();
+        break;
+      case R.id.action_endless_reverse_adapter:
+        setTitle(R.string.text_endless_reverse_adapter);
+        fragment = EndlessReserveFragment.newInstance();
         break;
     }
     if (fragment != null) {
