@@ -16,6 +16,7 @@
 
 package me.henrytao.recyclerview.adapter;
 
+import me.henrytao.recyclerview.config.Constants;
 import me.henrytao.recyclerview.config.Visibility;
 
 /**
@@ -28,10 +29,15 @@ public interface MultiStateAdapter {
   @Visibility
   int getVisibility(int position);
 
+  @Visibility
+  int getVisibility(int index, Constants.Type type);
+
   void setVisibility(int position, @Visibility int visibility);
+
+  void setVisibility(int index, @Visibility int visibility, Constants.Type type);
 
   interface OnVisibilityChangedListener {
 
-    void onVisibilityChanged(int position, @Visibility int visibility);
+    void onVisibilityChanged(MultiStateAdapter adapter, int position, @Visibility int visibility);
   }
 }

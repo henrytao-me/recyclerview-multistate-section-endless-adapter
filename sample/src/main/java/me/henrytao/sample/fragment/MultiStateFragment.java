@@ -29,9 +29,11 @@ import java.util.Random;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import me.henrytao.me.sample.R;
+import me.henrytao.recyclerview.config.Constants;
 import me.henrytao.recyclerview.config.Visibility;
 import me.henrytao.sample.adapter.MultiStateAdapter;
 import me.henrytao.sample.adapter.SimpleAdapter;
+import me.henrytao.sample.util.Utils;
 
 public class MultiStateFragment extends Fragment {
 
@@ -78,6 +80,16 @@ public class MultiStateFragment extends Fragment {
     vRecyclerView.setHasFixedSize(false);
     vRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     vRecyclerView.setAdapter(mAdapter);
+
+    mAdapter.setVisibility(0, View.GONE, Constants.Type.FOOTER);
+
+    mAdapter.addOnVisibilityChanged(new me.henrytao.recyclerview.adapter.MultiStateAdapter.OnVisibilityChangedListener() {
+      @Override
+      public void onVisibilityChanged(me.henrytao.recyclerview.adapter.MultiStateAdapter adapter, int position,
+          @Visibility int visibility) {
+        Utils.log("onVisibilityChanged | %d | %d", position, visibility);
+      }
+    });
   }
 
   @Visibility

@@ -26,6 +26,7 @@ import java.util.Map;
 
 import me.henrytao.recyclerview.adapter.BaseAdapter;
 import me.henrytao.recyclerview.adapter.MultiStateAdapter;
+import me.henrytao.recyclerview.config.Constants;
 import me.henrytao.recyclerview.config.Visibility;
 
 /**
@@ -33,9 +34,11 @@ import me.henrytao.recyclerview.config.Visibility;
  */
 public abstract class RecyclerViewAdapter extends BaseAdapter implements MultiStateAdapter {
 
-  private List<OnVisibilityChangedListener> mOnVisibilityChangedListeners = new ArrayList<>();
+  private Map<Integer, Integer> mFooterStates = new HashMap<>();
 
-  private Map<Integer, Integer> mStates = new HashMap<>();
+  private Map<Integer, Integer> mHeaderStates = new HashMap<>();
+
+  private List<OnVisibilityChangedListener> mOnVisibilityChangedListeners = new ArrayList<>();
 
   public RecyclerViewAdapter(int headerCount, int footerCount, RecyclerView.Adapter baseAdapter) {
     super(headerCount, footerCount, baseAdapter);
@@ -52,16 +55,22 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements MultiSt
 
   @Override
   public int getItemViewType(int position) {
-    if (mStates.containsKey(position) && mStates.get(position) == View.GONE) {
-      return ItemViewType.BLANK.getValue();
-    }
-    return super.getItemViewType(position);
+    return (getVisibility(position, Constants.Type.HEADER) == View.GONE
+        || getVisibility(getItemCount() - position - 1, Constants.Type.FOOTER) == View.GONE) ?
+        ItemViewType.BLANK.getValue() : super.getItemViewType(position);
   }
 
   @Override
   public int getVisibility(int position) {
-    if (mStates.containsKey(position)) {
-      int visibility = mStates.get(position);
+    @Visibility int visibility = getVisibility(getPosition(position, Constants.Type.HEADER), Constants.Type.HEADER);
+    return visibility != View.VISIBLE ? visibility : getVisibility(getPosition(position, Constants.Type.FOOTER), Constants.Type.FOOTER);
+  }
+
+  @Override
+  public int getVisibility(int index, Constants.Type type) {
+    Map<Integer, Integer> states = getStates(type);
+    if (states.containsKey(index)) {
+      int visibility = states.get(index);
       return visibility == View.GONE ? View.GONE : (visibility == View.INVISIBLE ? View.INVISIBLE : View.VISIBLE);
     }
     return View.VISIBLE;
@@ -70,8 +79,7 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements MultiSt
   @Override
   public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
     try {
-      holder.itemView.setVisibility(mStates.containsKey(position) && mStates.get(position) == View.INVISIBLE ?
-          View.INVISIBLE : View.VISIBLE);
+      holder.itemView.setVisibility(getVisibility(position) == View.VISIBLE ? View.VISIBLE : View.INVISIBLE);
       super.onBindViewHolder(holder, position);
     } catch (ClassCastException ignore) {
     }
@@ -79,18 +87,31 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements MultiSt
 
   @Override
   public void setVisibility(int position, @Visibility int visibility) {
-    if (getVisibility(position) == visibility) {
-      return;
-    }
-    mStates.put(position, visibility);
-    notifyItemChanged(position);
-    onVisibilityChanged(position, visibility);
+    setVisibility(position, visibility, Constants.Type.HEADER);
   }
 
-  private void onVisibilityChanged(int position, @Visibility int visibility) {
+  @Override
+  public void setVisibility(int index, @Visibility int visibility, Constants.Type type) {
+    if (getVisibility(index, type) == visibility) {
+      return;
+    }
+    getStates(type).put(index, visibility);
+    notifyItemChanged(getPosition(index, type));
+    onVisibilityChanged(index, visibility, type);
+  }
+
+  private int getPosition(int index, Constants.Type type) {
+    return type == Constants.Type.HEADER ? index : getItemCount() - index - 1;
+  }
+
+  private Map<Integer, Integer> getStates(Constants.Type type) {
+    return type == Constants.Type.HEADER ? mHeaderStates : mFooterStates;
+  }
+
+  private void onVisibilityChanged(int index, @Visibility int visibility, Constants.Type type) {
     int n = mOnVisibilityChangedListeners.size();
     for (int i = 0; i < n; i++) {
-      mOnVisibilityChangedListeners.get(i).onVisibilityChanged(position, visibility);
+      mOnVisibilityChangedListeners.get(i).onVisibilityChanged(this, getPosition(index, type), visibility);
     }
   }
 }
