@@ -19,7 +19,7 @@ compile "me.henrytao:recyclerview:<latest-version>"
 
 ## Demo
 
-[![Get it on Google Play](https://developer.android.com/images/brand/en_generic_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=me.henrytao.recyclerview)
+[![Get it on Google Play](https://raw.githubusercontent.com/henrytao-me/recyclerview-multistate-section-endless-adapter/master/screenshots/google-play.png)](https://play.google.com/store/apps/details?id=me.henrytao.recyclerview)
 
 Please note that the app on the Play store is not always the latest version.
 
@@ -84,12 +84,12 @@ public class MaterialAdapter extends SimpleRecyclerViewAdapter {
     mEndlessAdapter.setEndlessThreshold(5);
     mEndlessAdapter.setOnEndlessListener(new OnEndlessListener() {
       @Override
-      public void onReachThreshold() {
+      public void onReachThreshold(EndlessAdapter adapter) {
         // This method is called async. Please make sure it is still added to Activity if you use fragment.
         if (isAdded()) {
           mSimpleAdapter.addMoreItems(10);
           // Remeber to call onNext. It will fetch next page.
-          mEndlessAdapter.onNext();
+          adapter.onNext();
         }
       }
     });
@@ -111,7 +111,7 @@ Any contributions are welcome!
 Please check the [CONTRIBUTING](CONTRIBUTING.md) guideline before submitting a new issue. Wanna send PR? [Click HERE](https://github.com/henrytao-me/recyclerview-multistate-section-endless-adapter/pulls)
 
 
-## Special thanks to:
+## Special thanks to
 
 - [longbkiter07](https://github.com/longbkiter07)
 
