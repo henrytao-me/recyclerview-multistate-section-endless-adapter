@@ -27,12 +27,12 @@ ext {
       minSdkVersion    : 8,
       targetSdkVersion : 23,
       versionCode      : 5,
-      versionName      : "23.1.1"
+      versionName      : "23.2.0"
   ]
 
   dependencies = [
-      "com.android.support:appcompat-v7"   : "com.android.support:appcompat-v7:23.1.1",
-      "com.android.support:recyclerview-v7": "com.android.support:recyclerview-v7:23.1.1",
+      "com.android.support:appcompat-v7"   : "com.android.support:appcompat-v7:23.2.0",
+      "com.android.support:recyclerview-v7": "com.android.support:recyclerview-v7:23.2.0",
 
       "com.jakewharton:butterknife"        : "com.jakewharton:butterknife:7.0.1"
   ]
