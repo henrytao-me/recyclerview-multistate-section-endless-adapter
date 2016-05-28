@@ -1,4 +1,4 @@
-[ ![Download](https://api.bintray.com/packages/henrytao-me/maven/recyclerview/images/download.svg) ](https://bintray.com/henrytao-me/maven/recyclerview/_latestVersion)
+[ ![Download](https://api.bintray.com/packages/henrytao-me/maven/recyclerview/images/download.svg) ](https://bintray.com/henrytao-me/maven/recyclerview/_latestVersion) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Multistate%20Section%20Endless%20WrapperAdapter-brightgreen.svg?style=flat)](http://android-arsenal.com/details/1/2504)
 
 recyclerview-multistate-section-endless-adapter
 ================
