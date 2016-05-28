@@ -16,6 +16,7 @@
 
 package me.henrytao.recyclerview.adapter;
 
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,14 +47,18 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
 
   private boolean mBaseAdapterEnabled = true;
 
-  public BaseAdapter(int headerCount, int footerCount, RecyclerView.Adapter baseAdapter) {
+  public BaseAdapter(int headerCount, int footerCount, @Nullable RecyclerView.Adapter baseAdapter) {
     mHeaderCount = headerCount;
     mFooterCount = footerCount;
     setBaseAdapter(baseAdapter, false);
   }
 
-  public BaseAdapter(RecyclerView.Adapter baseAdapter) {
+  public BaseAdapter(@Nullable RecyclerView.Adapter baseAdapter) {
     this(0, 0, baseAdapter);
+  }
+
+  public BaseAdapter() {
+    this(0, 0, null);
   }
 
   @Override
@@ -157,6 +162,10 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
 
   public RecyclerView.ViewHolder onCreateBlankViewHolder(LayoutInflater inflater, ViewGroup parent) {
     return new BlankHolder(new View(parent.getContext()));
+  }
+
+  public void setBaseAdapter(RecyclerView.Adapter baseAdapter) {
+    setBaseAdapter(baseAdapter, true);
   }
 
   protected int getFooterViewIndex(int position) {

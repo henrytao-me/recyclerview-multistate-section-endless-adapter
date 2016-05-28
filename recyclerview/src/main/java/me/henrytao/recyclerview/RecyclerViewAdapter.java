@@ -59,6 +59,10 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements MultiSt
     super(baseAdapter);
   }
 
+  public RecyclerViewAdapter() {
+    super();
+  }
+
   @Override
   public void addOnVisibilityChanged(OnVisibilityChangedListener onVisibilityChangedListener) {
     mOnVisibilityChangedListeners.add(onVisibilityChangedListener);
