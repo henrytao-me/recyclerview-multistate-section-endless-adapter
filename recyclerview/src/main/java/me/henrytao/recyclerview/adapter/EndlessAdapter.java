@@ -25,9 +25,10 @@ public interface EndlessAdapter {
 
   void setEndlessThreshold(int threshold);
 
-  void onNext(boolean force);
-
-  void onNext();
+  /**
+   * This should be called before new items are added to adapter
+   */
+  void onNext(int numberOfNewAddedItems);
 
   void setEndlessEnabled(boolean enabled);
 
