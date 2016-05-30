@@ -47,6 +47,8 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
 
   private boolean mBaseAdapterEnabled = true;
 
+  private ViewTypeManager mViewTypeManager = new ViewTypeManager();
+
   public BaseAdapter(int headerCount, int footerCount, @Nullable RecyclerView.Adapter baseAdapter) {
     mHeaderCount = headerCount;
     mFooterCount = footerCount;
@@ -69,11 +71,11 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
   @Override
   public int getItemViewType(int position) {
     if (isHeaderView(position)) {
-      return (getHeaderViewIndex(position) << ItemViewType.CHUNK_SIZE) | ItemViewType.HEADER.getValue();
+      return mViewTypeManager.encode(ItemViewType.HEADER.getValue(), getHeaderViewIndex(position));
     } else if (isFooterView(position)) {
-      return (getFooterViewIndex(position) << ItemViewType.CHUNK_SIZE) | ItemViewType.FOOTER.getValue();
+      return mViewTypeManager.encode(ItemViewType.FOOTER.getValue(), getFooterViewIndex(position));
     } else if (isItemView(position)) {
-      return mBaseAdapter.getItemViewType(getItemViewIndex(position)) << ItemViewType.CHUNK_SIZE | ItemViewType.ITEM.getValue();
+      return mViewTypeManager.encode(ItemViewType.ITEM.getValue(), mBaseAdapter.getItemViewType(getItemViewIndex(position)));
     }
     return ItemViewType.BLANK.getValue();
   }
@@ -90,9 +92,10 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
   }
 
   @Override
-  public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-    int viewIndex = viewType >> ItemViewType.CHUNK_SIZE;
-    viewType = ~(viewIndex << ItemViewType.CHUNK_SIZE) & viewType;
+  public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewTypeCode) {
+    ViewTypeManager.Pointer code = mViewTypeManager.decode(viewTypeCode);
+    int viewType = code.getType();
+    int viewIndex = code.getIndex();
 
     LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
     RecyclerView.ViewHolder viewHolder = null;
