@@ -29,6 +29,7 @@ import me.henrytao.sample.fragment.EndlessFragment;
 import me.henrytao.sample.fragment.EndlessReserveFragment;
 import me.henrytao.sample.fragment.HeaderFooterFragment;
 import me.henrytao.sample.fragment.InfoFragment;
+import me.henrytao.sample.fragment.MergeFragment;
 import me.henrytao.sample.fragment.MultiStateFragment;
 import me.henrytao.sample.fragment.NestedWrapperAdapterFragment;
 
@@ -83,6 +84,10 @@ public class MainActivity extends AppCompatActivity {
       case R.id.action_endless_reverse_adapter:
         setTitle(R.string.text_endless_reverse_adapter);
         fragment = EndlessReserveFragment.newInstance();
+        break;
+      case R.id.action_merge_adapter:
+        setTitle(R.string.text_merge_adapter);
+        fragment = MergeFragment.newInstance();
         break;
     }
     if (fragment != null) {

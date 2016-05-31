@@ -50,4 +50,9 @@
     android:id="@+id/action_endless_reverse_adapter"
     android:title="@string/text_endless_reverse_adapter"
     app:showAsAction="never" />
+
+  <item
+    android:id="@+id/action_merge_adapter"
+    android:title="@string/text_merge_adapter"
+    app:showAsAction="never" />
 </menu>
