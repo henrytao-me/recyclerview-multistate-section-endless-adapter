@@ -24,6 +24,7 @@
   <string name="text_multi_state_adapter">MultiState Adapter</string>
   <string name="text_endless_adapter">Endless Adapter</string>
   <string name="text_endless_reverse_adapter">Endless Reverse Adapter</string>
+  <string name="text_merge_adapter">Merge Adapter</string>
 
   <!-- TODO: Remove or change this placeholder text -->
   <string name="hello_blank_fragment">Hello blank fragment</string>

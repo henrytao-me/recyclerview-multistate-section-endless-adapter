@@ -39,7 +39,7 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements MultiSt
 
   private boolean mEndlessEnabled = true;
 
-  private int mEndlessThreshold;
+  private int mEndlessThreshold = 1;
 
   private Map<Integer, Integer> mFooterStates = new HashMap<>();
 
@@ -57,6 +57,10 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements MultiSt
 
   public RecyclerViewAdapter(RecyclerView.Adapter baseAdapter) {
     super(baseAdapter);
+  }
+
+  public RecyclerViewAdapter() {
+    super();
   }
 
   @Override
@@ -108,22 +112,20 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements MultiSt
     if (isEndlessEnabled() &&
         mOnEndlessListener != null &&
         !mReachedThreshold &&
-        (position >= getItemCount() - 1 - getEndlessThreshold())) {
+        (position >= getItemCount() - getEndlessThreshold())) {
       mReachedThreshold = true;
-      new OnReachThresholdTask(this, mOnEndlessListener).execute();
+      onReachThreshold();
     }
   }
 
   @Override
-  public void onNext() {
-    onNext(false);
-  }
-
-  @Override
-  public void onNext(boolean force) {
-    mReachedThreshold = false;
-    if (force && isEndlessEnabled()) {
-      notifyItemChanged(getItemCount() - 1 - getEndlessThreshold());
+  public void onNext(int numberOfNewAddedItems) {
+    mReachedThreshold = !(numberOfNewAddedItems > getEndlessThreshold());
+    if (isEndlessEnabled() &&
+        mOnEndlessListener != null &&
+        mReachedThreshold &&
+        numberOfNewAddedItems == 0) {
+      onReachThreshold();
     }
   }
 
@@ -162,6 +164,10 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements MultiSt
 
   private Map<Integer, Integer> getStates(Constants.Type type) {
     return type == Constants.Type.HEADER ? mHeaderStates : mFooterStates;
+  }
+
+  private void onReachThreshold() {
+    new OnReachThresholdTask(this, mOnEndlessListener).execute();
   }
 
   private void onVisibilityChanged(int index, @Visibility int visibility, Constants.Type type) {

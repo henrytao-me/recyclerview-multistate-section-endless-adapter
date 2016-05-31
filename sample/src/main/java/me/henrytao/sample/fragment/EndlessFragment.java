@@ -70,7 +70,7 @@ public class EndlessFragment extends Fragment {
     mEndlessAdapter.setOnEndlessListener(new me.henrytao.recyclerview.adapter.EndlessAdapter.OnEndlessListener() {
       @Override
       public void onReachThreshold(me.henrytao.recyclerview.adapter.EndlessAdapter adapter) {
-        adapter.onNext();
+        adapter.onNext(10);
         mSimpleAdapter.addMoreItems(10);
         mSimpleAdapter.notifyDataSetChanged();
       }

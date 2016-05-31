@@ -16,6 +16,7 @@
 
 package me.henrytao.recyclerview.adapter;
 
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,14 +47,20 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
 
   private boolean mBaseAdapterEnabled = true;
 
-  public BaseAdapter(int headerCount, int footerCount, RecyclerView.Adapter baseAdapter) {
+  private ViewTypeManager mViewTypeManager = new ViewTypeManager();
+
+  public BaseAdapter(int headerCount, int footerCount, @Nullable RecyclerView.Adapter baseAdapter) {
     mHeaderCount = headerCount;
     mFooterCount = footerCount;
     setBaseAdapter(baseAdapter, false);
   }
 
-  public BaseAdapter(RecyclerView.Adapter baseAdapter) {
+  public BaseAdapter(@Nullable RecyclerView.Adapter baseAdapter) {
     this(0, 0, baseAdapter);
+  }
+
+  public BaseAdapter() {
+    this(0, 0, null);
   }
 
   @Override
@@ -64,11 +71,11 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
   @Override
   public int getItemViewType(int position) {
     if (isHeaderView(position)) {
-      return (getHeaderViewIndex(position) << ItemViewType.CHUNK_SIZE) | ItemViewType.HEADER.getValue();
+      return mViewTypeManager.encode(ItemViewType.HEADER.getValue(), getHeaderViewIndex(position));
     } else if (isFooterView(position)) {
-      return (getFooterViewIndex(position) << ItemViewType.CHUNK_SIZE) | ItemViewType.FOOTER.getValue();
+      return mViewTypeManager.encode(ItemViewType.FOOTER.getValue(), getFooterViewIndex(position));
     } else if (isItemView(position)) {
-      return mBaseAdapter.getItemViewType(getItemViewIndex(position)) << ItemViewType.CHUNK_SIZE | ItemViewType.ITEM.getValue();
+      return mViewTypeManager.encode(ItemViewType.ITEM.getValue(), mBaseAdapter.getItemViewType(getItemViewIndex(position)));
     }
     return ItemViewType.BLANK.getValue();
   }
@@ -85,9 +92,10 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
   }
 
   @Override
-  public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-    int viewIndex = viewType >> ItemViewType.CHUNK_SIZE;
-    viewType = ~(viewIndex << ItemViewType.CHUNK_SIZE) & viewType;
+  public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewTypeCode) {
+    ViewTypeManager.Pointer code = mViewTypeManager.decode(viewTypeCode);
+    int viewType = code.getType();
+    int viewIndex = code.getIndex();
 
     LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
     RecyclerView.ViewHolder viewHolder = null;
@@ -157,6 +165,10 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
 
   public RecyclerView.ViewHolder onCreateBlankViewHolder(LayoutInflater inflater, ViewGroup parent) {
     return new BlankHolder(new View(parent.getContext()));
+  }
+
+  public void setBaseAdapter(RecyclerView.Adapter baseAdapter) {
+    setBaseAdapter(baseAdapter, true);
   }
 
   protected int getFooterViewIndex(int position) {

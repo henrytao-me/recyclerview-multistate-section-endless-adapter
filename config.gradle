@@ -22,15 +22,19 @@ ext {
 
   android = [
       compileSdkVersion: 23,
-      buildToolsVersion: "23.0.1",
+      buildToolsVersion: "23.0.2",
       applicationId    : "me.henrytao.recyclerview",
       minSdkVersion    : 8,
       targetSdkVersion : 23,
-      versionCode      : 6,
-      versionName      : "23.3.0"
+      versionCode      : 7,
+      versionName      : "3.0.0"
   ]
 
   dependencies = [
+      "com.android.support:recyclerview-v7": "com.android.support:recyclerview-v7:21.0.0"
+  ]
+
+  sampleDependencies = [
       "com.android.support:appcompat-v7"   : "com.android.support:appcompat-v7:23.3.0",
       "com.android.support:recyclerview-v7": "com.android.support:recyclerview-v7:23.3.0",
 
