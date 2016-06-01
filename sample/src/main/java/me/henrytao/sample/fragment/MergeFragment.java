@@ -28,6 +28,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import me.henrytao.me.sample.R;
 import me.henrytao.recyclerview.MergeAdapter;
+import me.henrytao.sample.adapter.MultiItemTypeAdapter;
 import me.henrytao.sample.adapter.SimpleAdapter;
 
 public class MergeFragment extends Fragment {
@@ -59,7 +60,8 @@ public class MergeFragment extends Fragment {
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
-    RecyclerView.Adapter adapter = new MergeAdapter(new SimpleAdapter(5), new SimpleAdapter(5), new SimpleAdapter(5));
+    RecyclerView.Adapter adapter = new MergeAdapter(new MultiItemTypeAdapter(10), new SimpleAdapter(10));
+    //adapter = new MultiItemTypeAdapter(10);
 
     vRecyclerView.setHasFixedSize(false);
     vRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

@@ -54,7 +54,7 @@ public class MergeAdapter extends RecyclerView.Adapter {
   @Override
   public int getItemViewType(int position) {
     ViewTypeManager.Pointer info = getItemViewIndex(position);
-    return info != null ? mViewTypeManager.encode(info.getType(), info.getIndex()) : 0;
+    return info != null ? mViewTypeManager.encode(info.getType(), mAdapters.get(info.getType()).getItemViewType(info.getIndex())) : 0;
   }
 
   @Override
