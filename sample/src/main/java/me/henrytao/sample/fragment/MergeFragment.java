@@ -61,7 +61,6 @@ public class MergeFragment extends Fragment {
     super.onViewCreated(view, savedInstanceState);
 
     RecyclerView.Adapter adapter = new MergeAdapter(new MultiItemTypeAdapter(10), new SimpleAdapter(10));
-    //adapter = new MultiItemTypeAdapter(10);
 
     vRecyclerView.setHasFixedSize(false);
     vRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
