@@ -266,7 +266,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
   }
 
   public enum ItemViewType {
-    BLANK(0), ITEM(1), HEADER(2), FOOTER(3);
+    BLANK(-1), ITEM(1), HEADER(2), FOOTER(3);
 
     protected static int CHUNK_SIZE = 2;
 
