@@ -81,7 +81,7 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements MultiSt
   @Override
   public int getItemViewType(int position) {
     return (getVisibility(position, Constants.Type.HEADER) == View.GONE
-        || getVisibility(getItemCount() - position - 1, Constants.Type.FOOTER) == View.GONE) ?
+        || getVisibility(getFooterCount() - (getItemCount() - position), Constants.Type.FOOTER) == View.GONE) ?
         ItemViewType.BLANK.getValue() : super.getItemViewType(position);
   }
 
@@ -120,11 +120,11 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements MultiSt
 
   @Override
   public void onNext(int numberOfNewAddedItems) {
-    mReachedThreshold = !(numberOfNewAddedItems > getEndlessThreshold());
+    mReachedThreshold = false;
     if (isEndlessEnabled() &&
         mOnEndlessListener != null &&
-        mReachedThreshold &&
-        numberOfNewAddedItems == 0) {
+        numberOfNewAddedItems <= getEndlessThreshold()) {
+      mReachedThreshold = true;
       onReachThreshold();
     }
   }
