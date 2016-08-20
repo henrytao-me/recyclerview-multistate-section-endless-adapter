@@ -163,6 +163,20 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
     return !isHeaderView(position) && !isFooterView(position) && !isBlankView(position);
   }
 
+  public void notifyFooterChanged(int index) {
+    int position = getFooterViewPosition(index);
+    if (position >= 0) {
+      notifyItemChanged(position);
+    }
+  }
+
+  public void notifyHeaderChanged(int index) {
+    int position = getHeaderViewPosition(index);
+    if (position >= 0) {
+      notifyItemChanged(position);
+    }
+  }
+
   public RecyclerView.ViewHolder onCreateBlankViewHolder(LayoutInflater inflater, ViewGroup parent) {
     return new BlankHolder(new View(parent.getContext()));
   }
