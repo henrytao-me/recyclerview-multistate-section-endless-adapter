@@ -39,7 +39,7 @@ public class BaseHolder extends RecyclerView.ViewHolder {
   public BaseHolder(LayoutInflater inflater, ViewGroup parent, @LayoutRes int layoutId, boolean isFillParent) {
     super(inflate(inflater, parent, layoutId));
     if (isFillParent && parent != null) {
-      getItemView().getLayoutParams().height = parent.getMeasuredHeight();
+      getItemView().getLayoutParams().height = parent.getMeasuredHeight() - (parent.getPaddingTop() + parent.getPaddingBottom());
     }
   }
 
