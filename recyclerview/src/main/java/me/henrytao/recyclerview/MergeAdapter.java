@@ -132,8 +132,7 @@ public class MergeAdapter extends RecyclerView.Adapter {
 
   protected int getItemViewPosition(int adapterIndex, int itemIndex) {
     int position = itemIndex;
-    int i = 0;
-    for (int n = adapterIndex + 1; i < n; i++) {
+    for (int i = 0; i < adapterIndex; i++) {
       position += mAdapters.get(i).getItemCount();
     }
     return position;
