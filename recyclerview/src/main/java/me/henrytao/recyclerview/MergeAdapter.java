@@ -22,23 +22,29 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.henrytao.recyclerview.adapter.BaseAdapterCallback;
 import me.henrytao.recyclerview.adapter.ViewTypeManager;
 
 /**
  * Created by henrytao on 5/30/16.
  */
-public class MergeAdapter extends RecyclerView.Adapter {
+public class MergeAdapter extends RecyclerView.Adapter implements BaseAdapterCallback {
 
-  private List<AdapterDataObserver> mAdapterDataObservers = new ArrayList<>();
+  private final List<AdapterDataObserver> mAdapterDataObservers = new ArrayList<>();
 
-  private List<RecyclerView.Adapter> mAdapters = new ArrayList<>();
+  private final List<RecyclerView.Adapter> mAdapters = new ArrayList<>();
 
-  private ViewTypeManager mViewTypeManager = new ViewTypeManager();
+  private final ViewTypeManager mViewTypeManager = new ViewTypeManager();
 
   public MergeAdapter(RecyclerView.Adapter... adapters) {
-    for (int i = 0; i < adapters.length; i++) {
-      addAdapter(adapters[i], false);
+    for (RecyclerView.Adapter adapter : adapters) {
+      addAdapter(adapter, false);
     }
+  }
+
+  @Override
+  public List<RecyclerView.Adapter> getBaseAdapters() {
+    return mAdapters;
   }
 
   @Override

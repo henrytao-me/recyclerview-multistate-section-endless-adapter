@@ -21,35 +21,36 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 /**
- * Created by henrytao on 8/18/15.
+ * Created by henrytao on 10/23/16.
  */
-public abstract class SimpleRecyclerViewAdapter extends RecyclerViewAdapter {
+public abstract class EndlessAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerViewAdapter {
 
-  public abstract RecyclerView.ViewHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent);
+  public abstract VH onCreateEndlessLoadingViewHolder(LayoutInflater inflater, ViewGroup parent);
 
-  public abstract RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent);
-
-  public SimpleRecyclerViewAdapter(RecyclerView.Adapter baseAdapter) {
-    super(1, 1, baseAdapter);
+  public EndlessAdapter(RecyclerView.Adapter baseAdapter) {
+    super(0, 1, baseAdapter);
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public void onBindFooterViewHolder(RecyclerView.ViewHolder holder, int index) {
-
+    onBindEndlessLoadingViewHolder((VH) holder);
   }
 
   @Override
   public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder, int index) {
-
   }
 
   @Override
   public RecyclerView.ViewHolder onCreateFooterViewHolder(LayoutInflater inflater, ViewGroup parent, int index) {
-    return onCreateFooterViewHolder(inflater, parent);
+    return onCreateEndlessLoadingViewHolder(inflater, parent);
   }
 
   @Override
   public RecyclerView.ViewHolder onCreateHeaderViewHolder(LayoutInflater inflater, ViewGroup parent, int index) {
-    return onCreateHeaderViewHolder(inflater, parent);
+    return null;
+  }
+
+  public void onBindEndlessLoadingViewHolder(VH holder) {
   }
 }
