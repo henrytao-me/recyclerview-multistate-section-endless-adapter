@@ -16,6 +16,7 @@
 
 package me.henrytao.recyclerview;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -41,8 +42,10 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements MultiSt
 
   private int mEndlessThreshold = 1;
 
+  @SuppressLint("UseSparseArrays")
   private Map<Integer, Integer> mFooterStates = new HashMap<>();
 
+  @SuppressLint("UseSparseArrays")
   private Map<Integer, Integer> mHeaderStates = new HashMap<>();
 
   private OnEndlessListener mOnEndlessListener;

@@ -22,12 +22,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import me.henrytao.recyclerview.holder.BlankHolder;
 
 /**
  * Created by henrytao on 2/27/16.
  */
-public abstract class BaseAdapter extends RecyclerView.Adapter {
+public abstract class BaseAdapter extends RecyclerView.Adapter implements BaseAdapterCallback {
 
   public abstract void onBindFooterViewHolder(RecyclerView.ViewHolder holder, int index);
 
@@ -64,6 +68,11 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
   }
 
   @Override
+  public List<RecyclerView.Adapter> getBaseAdapters() {
+    return mBaseAdapter != null ? Collections.singletonList(mBaseAdapter) : new ArrayList<RecyclerView.Adapter>();
+  }
+
+  @Override
   public int getItemCount() {
     return getBaseItemCount() + getHeaderCount() + getFooterCount();
   }
@@ -80,6 +89,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter {
     return ItemViewType.BLANK.getValue();
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
     if (isHeaderView(position)) {
