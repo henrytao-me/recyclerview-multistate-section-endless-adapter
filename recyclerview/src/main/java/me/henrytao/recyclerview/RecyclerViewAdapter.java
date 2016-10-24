@@ -38,7 +38,7 @@ import me.henrytao.recyclerview.config.Visibility;
  */
 public abstract class RecyclerViewAdapter extends BaseAdapter implements MultiStateAdapter, EndlessAdapter {
 
-  private boolean mEndlessEnabled = true;
+  private boolean mEndlessEnabled = false;
 
   private int mEndlessThreshold = 1;
 
