@@ -116,12 +116,7 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements MultiSt
 
   @Override
   public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-    try {
-      holder.itemView.setVisibility(getVisibility(position) == View.VISIBLE ? View.VISIBLE : View.INVISIBLE);
-      super.onBindViewHolder(holder, position);
-    } catch (ClassCastException ignore) {
-    }
-
+    super.onBindViewHolder(holder, position);
     if (isEndlessEnabled() &&
         mOnEndlessListener != null &&
         !mReachedThreshold &&

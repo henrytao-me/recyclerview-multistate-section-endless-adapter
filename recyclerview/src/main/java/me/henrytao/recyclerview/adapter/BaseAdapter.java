@@ -92,6 +92,9 @@ public abstract class BaseAdapter extends RecyclerView.Adapter implements BaseAd
   @SuppressWarnings("unchecked")
   @Override
   public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    if (holder instanceof BlankHolder) {
+      return;
+    }
     if (isHeaderView(position)) {
       onBindHeaderViewHolder(holder, getHeaderViewIndex(position));
     } else if (isFooterView(position)) {
