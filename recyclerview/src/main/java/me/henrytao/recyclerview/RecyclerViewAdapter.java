@@ -105,6 +105,16 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements MultiSt
   }
 
   @Override
+  public boolean isEndlessEnabled() {
+    return mEndlessEnabled;
+  }
+
+  @Override
+  public void setEndlessEnabled(boolean enabled) {
+    mEndlessEnabled = enabled;
+  }
+
+  @Override
   public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
     try {
       holder.itemView.setVisibility(getVisibility(position) == View.VISIBLE ? View.VISIBLE : View.INVISIBLE);
@@ -150,15 +160,6 @@ public abstract class RecyclerViewAdapter extends BaseAdapter implements MultiSt
     getStates(type).put(index, visibility);
     notifyItemChanged(getPosition(index, type));
     onVisibilityChanged(index, visibility, type);
-  }
-
-  public boolean isEndlessEnabled() {
-    return mEndlessEnabled;
-  }
-
-  @Override
-  public void setEndlessEnabled(boolean enabled) {
-    mEndlessEnabled = enabled;
   }
 
   private int getPosition(int index, Constants.Type type) {
